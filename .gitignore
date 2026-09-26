@@ -7,6 +7,6 @@ npm-debug.log*
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
-audio/
+/audio/
 tilda_interactive_news_lesson.html
 extracted_tasks_pages_60_67.md
