@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { JourneyActivity } from './JourneyLesson';
 
 type LessonId = 'news' | 'adrenalin' | 'journey' | 'culture';
 
@@ -11,6 +12,14 @@ type ActivityKey =
   | 'headlines'
   | 'phrases'
   | 'writing'
+  | 'journey-reading'
+  | 'journey-listening'
+  | 'deduction'
+  | 'coast-to-coast'
+  | 'past-perfect'
+  | 'journey-anecdote'
+  | 'directions'
+  | 'dictionary-labels'
   | 'vocabulary';
 
 type SavedWord = {
@@ -18,6 +27,7 @@ type SavedWord = {
   term: string;
   note: string;
   section: string;
+  lessonId: LessonId;
 };
 
 type Lesson = {
@@ -61,13 +71,19 @@ const lessons: Lesson[] = [
   {
     id: 'journey',
     title: 'Journey',
-    unit: 'Coming next',
+    unit: 'Unit 8',
     tone: 'Travel, directions and deduction',
     sections: [
-      { key: 'overview', title: 'Lesson map', eyebrow: 'Draft' },
-      { key: 'reading', title: 'Reading', eyebrow: 'Draft' },
-      { key: 'passives', title: 'Grammar', eyebrow: 'Draft' },
-      { key: 'phrases', title: 'Useful phrases', eyebrow: 'Draft' },
+      { key: 'overview', title: 'Lesson map', eyebrow: 'Start' },
+      { key: 'journey-reading', title: 'Escape & The Beach', eyebrow: 'Reading' },
+      { key: 'journey-listening', title: 'Travel photos', eyebrow: '2.26' },
+      { key: 'deduction', title: 'Modals of deduction', eyebrow: 'Grammar' },
+      { key: 'coast-to-coast', title: 'Coast to coast', eyebrow: 'Reading' },
+      { key: 'past-perfect', title: 'Past perfect', eyebrow: 'Grammar' },
+      { key: 'journey-anecdote', title: 'Journey anecdote', eyebrow: 'Speaking' },
+      { key: 'directions', title: 'Asking directions', eyebrow: 'Useful phrases' },
+      { key: 'dictionary-labels', title: 'Dictionary labels', eyebrow: 'Vocabulary' },
+      { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
     ],
   },
   {
@@ -300,14 +316,62 @@ const usefulPhraseQuestions = [
   },
 ];
 
+const emailWords = [
+  'Actually',
+  'Anyway',
+  'Apart',
+  'apparently',
+  'forward',
+  'getting',
+  'great',
+  'heard',
+  'let',
+  'news',
+  'pleased',
+  'sorry',
+  'touch',
+  'Well',
+];
+
+const emailAnswers: Record<number, string> = {
+  2: 'sorry',
+  3: 'pleased',
+  4: 'Well',
+  5: 'Actually',
+  6: 'news',
+  7: 'heard',
+  8: 'apparently',
+  9: 'let',
+  10: 'Apart',
+  11: 'forward',
+  12: 'Anyway',
+  13: 'touch',
+  14: 'getting',
+};
+
+const emailReadingQuestions = [
+  { prompt: 'Who lives in Berlin?', answer: 'Pia', options: ['Pia', 'Ian', 'Anna'] },
+  { prompt: 'Who used to live in Berlin?', answer: 'Ian', options: ['Ian', 'Pia', 'Giorgio'] },
+  { prompt: "Who's been promoted at work?", answer: 'Ian', options: ['Ian', 'Pia', 'Giorgio'] },
+  { prompt: "Who's got a new boss?", answer: 'Pia', options: ['Pia', 'Ian', 'Anna'] },
+  {
+    prompt: "Who's split up?",
+    answer: 'Anna and Giorgio',
+    options: ['Anna and Giorgio', 'Pia and Ian', 'Ian and Giorgio'],
+  },
+  { prompt: "Who's gone back to Italy?", answer: 'Giorgio', options: ['Giorgio', 'Ian', 'Anna'] },
+];
+
 function App() {
   const [lessonId, setLessonId] = useState<LessonId>('news');
   const [openLesson, setOpenLesson] = useState<LessonId>('news');
   const [activity, setActivity] = useState<ActivityKey>('overview');
   const [savedWords, setSavedWords] = useState<SavedWord[]>(() => {
     try {
-      const stored = window.localStorage.getItem('interactive-english-news-words');
-      return stored ? (JSON.parse(stored) as SavedWord[]) : [];
+      const stored = window.localStorage.getItem('interactive-english-saved-words')
+        ?? window.localStorage.getItem('interactive-english-news-words');
+      const parsed = stored ? (JSON.parse(stored) as Omit<SavedWord, 'lessonId'>[]) : [];
+      return parsed.map((word) => ({ ...word, lessonId: 'lessonId' in word ? word.lessonId as LessonId : 'news' }));
     } catch {
       return [];
     }
@@ -317,15 +381,17 @@ function App() {
   const currentSection = lesson.sections.find((section) => section.key === activity);
 
   useEffect(() => {
-    window.localStorage.setItem('interactive-english-news-words', JSON.stringify(savedWords));
+    window.localStorage.setItem('interactive-english-saved-words', JSON.stringify(savedWords));
   }, [savedWords]);
 
-  const addWord = (term: string, note: string, section: string) => {
+  const addWord = (term: string, note: string, section: string, wordLessonId: LessonId) => {
     const cleanTerm = term.trim();
     if (!cleanTerm) return;
 
     setSavedWords((current) => {
-      const existing = current.find((item) => item.term.toLowerCase() === cleanTerm.toLowerCase());
+      const existing = current.find(
+        (item) => item.lessonId === wordLessonId && item.term.toLowerCase() === cleanTerm.toLowerCase(),
+      );
       if (existing) {
         return current.map((item) =>
           item.id === existing.id
@@ -341,6 +407,7 @@ function App() {
           term: cleanTerm,
           note: note.trim(),
           section,
+          lessonId: wordLessonId,
         },
       ];
     });
@@ -424,17 +491,25 @@ function App() {
           </div>
         </header>
 
-        {lesson.id === 'news' ? (
+        {lesson.id === 'news' || lesson.id === 'journey' ? (
           <>
-            <NewsActivity
-              activity={activity}
-              savedWords={savedWords}
-              onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
-            />
+            {lesson.id === 'news' ? (
+              <NewsActivity
+                activity={activity}
+                savedWords={savedWords.filter((word) => word.lessonId === 'news')}
+                onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
+              />
+            ) : (
+              <JourneyActivity
+                activity={activity}
+                savedWords={savedWords.filter((word) => word.lessonId === 'journey')}
+                onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
+              />
+            )}
             {activity !== 'vocabulary' && (
               <WordCollector
-                section={currentSection?.title ?? 'News'}
-                onAddWord={addWord}
+                section={currentSection?.title ?? lesson.title}
+                onAddWord={(term, note, section) => addWord(term, note, section, lesson.id)}
               />
             )}
           </>
@@ -707,8 +782,14 @@ function WritingPage() {
 
   return (
     <section className="stack">
-      <PageTitle eyebrow="Writing" title="Reply to personal news" />
-      <InteractiveCard title="Use the prompts to write Ian's reply">
+      <PageTitle eyebrow="Reading & Writing · page 65" title="Personal news by email" />
+      <EmailCompletionExercise />
+      <ChoiceGrid
+        title="Exercise 2: read the email again and answer the questions"
+        questions={emailReadingQuestions}
+        randomizeOptions
+      />
+      <InteractiveCard title="Exercise 3: use the prompts to write Ian's reply">
         <div className="word-bank">
           {['Actually', 'Anyway', 'Apart from that', 'apparently', 'forward to', 'pleased', 'sorry', 'touch', 'Well done'].map((word) => (
             <span key={word}>{word}</span>
@@ -724,6 +805,91 @@ function WritingPage() {
         </p>
       </InteractiveCard>
     </section>
+  );
+}
+
+function EmailCompletionExercise() {
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [optionOrders] = useState<Record<number, string[]>>(() =>
+    Object.fromEntries(
+      Object.keys(emailAnswers).map((number) => [Number(number), shuffleOptions(emailWords)]),
+    ),
+  );
+  const correct = Object.entries(emailAnswers).filter(
+    ([number, answer]) => answers[Number(number)] === answer,
+  ).length;
+  const usedWords = new Set(['great', ...Object.values(answers).filter(Boolean)]);
+
+  const blank = (number: number) => {
+    const value = answers[number] ?? '';
+    const isCorrect = value === emailAnswers[number];
+    return (
+      <span className="email-blank">
+        <span className="blank-number">{number}</span>
+        <select
+          className={value ? (isCorrect ? 'correct' : 'wrong') : ''}
+          value={value}
+          onChange={(event) =>
+            setAnswers((current) => ({ ...current, [number]: event.target.value }))
+          }
+          aria-label={`Email gap ${number}`}
+        >
+          <option value="">Choose</option>
+          {(optionOrders[number] ?? emailWords).map((word) => (
+            <option
+              value={word}
+              key={word}
+              disabled={word !== value && usedWords.has(word)}
+            >
+              {word}
+            </option>
+          ))}
+        </select>
+      </span>
+    );
+  };
+
+  return (
+    <InteractiveCard title="Exercise 1: complete Pia's email to Ian">
+      <p className="exercise-instruction">Use each word from the box once. Number 1 is completed as an example.</p>
+      <div className="email-word-bank" aria-label="Words for the email">
+        {emailWords.map((word) => (
+          <span className={usedWords.has(word) ? 'used' : ''} key={word}>
+            {word}
+          </span>
+        ))}
+      </div>
+      <article className="email-sheet">
+        <header>
+          <span><strong>To:</strong> Ian Arnold</span>
+          <span><strong>Subject:</strong> Congratulations!</span>
+        </header>
+        <div className="email-body">
+          <p>Hi Ian,</p>
+          <p>
+            Thanks for your email. It was <span className="completed-gap">1 · great</span> to hear from you. I'm {blank(2)} I haven't replied sooner, but work's been really stressful. More about that in a minute. But first, I was really {blank(3)} to hear about your promotion. You deserve it - you've worked so hard at that job. {blank(4)} done! I wish you were still living in Berlin, so we could go out and celebrate.
+          </p>
+          <p>
+            Anyway, back to my stressful job! {blank(5)}, it's much better since my boss retired. I think I told you about her. She was a real bully. Apparently, she was unhappy in her private life, but that's no reason to be horrible at work. The good {blank(6)} is that we've got a new boss, and he's quite young and dynamic. He's already made a few changes, and the best thing is that he wants me to travel more, so I'll be able to see all my friends back home more often.
+          </p>
+          <p>
+            Talking of friends, have you {blank(7)} about Anna and Giorgio? They've split up! I've no idea why, but {blank(8)}, Giorgio's gone back to Italy, and Anna's refusing to talk to anybody about it. Please {blank(9)} me know if you hear any more about it.
+          </p>
+          <p>
+            {blank(10)} from that, everything's fine here in Berlin. It's getting quite hot, and I'm looking {blank(11)} to going on holiday in August. What are your holiday plans?
+          </p>
+          <p>
+            {blank(12)}, I'd better get on with my work now, but be in {blank(13)} soon and tell me how you're {blank(14)} on.
+          </p>
+          <p>Lots of love,<br />Pia</p>
+        </div>
+      </article>
+      <p className="result">
+        {Object.keys(answers).length > 0
+          ? `${correct}/${Object.keys(emailAnswers).length} correct`
+          : 'Complete the gaps to start checking.'}
+      </p>
+    </InteractiveCard>
   );
 }
 
