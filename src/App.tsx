@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type LessonId = 'news' | 'adrenalin' | 'journey' | 'culture';
 
@@ -10,7 +10,15 @@ type ActivityKey =
   | 'passives'
   | 'headlines'
   | 'phrases'
-  | 'writing';
+  | 'writing'
+  | 'vocabulary';
+
+type SavedWord = {
+  id: string;
+  term: string;
+  note: string;
+  section: string;
+};
 
 type Lesson = {
   id: LessonId;
@@ -35,6 +43,7 @@ const lessons: Lesson[] = [
       { key: 'headlines', title: 'Headline language', eyebrow: 'Vocabulary' },
       { key: 'phrases', title: 'Useful phrases', eyebrow: 'Speaking' },
       { key: 'writing', title: 'Personal email', eyebrow: 'Writing' },
+      { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
     ],
   },
   {
@@ -132,6 +141,97 @@ const verbPatternQuestions = [
   { prompt: "Celebrities ___ us that we're invading their privacy.", answer: 'tell' },
 ];
 
+const verbPatternTableQuestions = [
+  { prompt: 'Verb + -ing: ___ doing something', answer: 'enjoy' },
+  { prompt: 'Verb + to-infinitive: ___ to do something', answer: 'agree' },
+  { prompt: 'Verb + that-clause: ___ that ...', answer: 'explain' },
+  { prompt: 'Verb + person + (not) to-infinitive: ___ somebody to do something', answer: 'ask' },
+  { prompt: 'Verb + person + that-clause: ___ somebody that ...', answer: 'tell' },
+];
+
+const extraVerbPatternQuestions = [
+  {
+    prompt: "I don't mind ___ for a few minutes.",
+    answer: 'waiting',
+    options: ['waiting', 'to wait', 'that I wait'],
+  },
+  {
+    prompt: 'The photographer agreed ___ the picture.',
+    answer: 'to delete',
+    options: ['deleting', 'to delete', 'that delete'],
+  },
+  {
+    prompt: 'She explained ___ late because of the traffic.',
+    answer: 'that she was',
+    options: ['that she was', 'her to be', 'being'],
+  },
+  {
+    prompt: 'They warned us ___ the private photos.',
+    answer: 'not to publish',
+    options: ['not publishing', 'that not publish', 'not to publish'],
+  },
+  {
+    prompt: 'The editor suggested ___ a different headline.',
+    answer: 'using',
+    options: ['to use', 'using', 'us to use'],
+  },
+  {
+    prompt: 'He promised ___ before the story went online.',
+    answer: 'to call',
+    options: ['calling', 'that call', 'to call'],
+  },
+  {
+    prompt: 'The actor told the reporters ___ outside.',
+    answer: 'to wait',
+    options: ['waiting', 'that wait', 'to wait'],
+  },
+  {
+    prompt: 'Many readers enjoy ___ about celebrity news.',
+    answer: 'talking',
+    options: ['to talk', 'talking', 'that they talk'],
+  },
+];
+
+const impossibleVerbStatements = [
+  {
+    id: 'a',
+    parts: [
+      { before: 'I ', options: ['asked', 'told', 'said'], answer: 'said', after: ' him to stop, but he pushed the camera in my face and continued taking photos.' },
+    ],
+  },
+  {
+    id: 'b',
+    parts: [
+      { before: 'I just ', options: ['try', 'want', 'enjoy'], answer: 'enjoy', after: ' to lead a normal life, but these people are making it impossible.' },
+    ],
+  },
+  {
+    id: 'c',
+    parts: [
+      { before: 'When a celebrity gets aggressive, I ', options: ['tell', 'explain', 'say'], answer: 'tell', after: " that I'm just doing my job." },
+    ],
+  },
+  {
+    id: 'd',
+    parts: [
+      { before: 'I ', options: ['told', 'warned', 'suggested'], answer: 'suggested', after: " him to stop taking photos of my little girl or I'd take him to court." },
+    ],
+  },
+  {
+    id: 'e',
+    parts: [
+      { before: "If they don't enjoy the attention, I ", options: ['think', 'suggest', 'tell'], answer: 'tell', after: ' that they should change jobs.' },
+    ],
+  },
+  {
+    id: 'f',
+    parts: [
+      { before: "They're hypocritical. On the one hand they ", options: ['need', 'agree', "don't mind"], answer: "don't mind", after: ' to have their photos in the press, and on the other hand they ' },
+      { before: '', options: ['warn', 'tell', 'explain'], answer: 'explain', after: " us that we're invading their privacy." },
+    ],
+  },
+];
+
 const passiveQuestions = [
   {
     prompt: 'Someone was treating him for asthma.',
@@ -204,8 +304,47 @@ function App() {
   const [lessonId, setLessonId] = useState<LessonId>('news');
   const [openLesson, setOpenLesson] = useState<LessonId>('news');
   const [activity, setActivity] = useState<ActivityKey>('overview');
+  const [savedWords, setSavedWords] = useState<SavedWord[]>(() => {
+    try {
+      const stored = window.localStorage.getItem('interactive-english-news-words');
+      return stored ? (JSON.parse(stored) as SavedWord[]) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const lesson = useMemo(() => lessons.find((item) => item.id === lessonId) ?? lessons[0], [lessonId]);
+  const currentSection = lesson.sections.find((section) => section.key === activity);
+
+  useEffect(() => {
+    window.localStorage.setItem('interactive-english-news-words', JSON.stringify(savedWords));
+  }, [savedWords]);
+
+  const addWord = (term: string, note: string, section: string) => {
+    const cleanTerm = term.trim();
+    if (!cleanTerm) return;
+
+    setSavedWords((current) => {
+      const existing = current.find((item) => item.term.toLowerCase() === cleanTerm.toLowerCase());
+      if (existing) {
+        return current.map((item) =>
+          item.id === existing.id
+            ? { ...item, note: note.trim() || item.note, section }
+            : item,
+        );
+      }
+
+      return [
+        ...current,
+        {
+          id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          term: cleanTerm,
+          note: note.trim(),
+          section,
+        },
+      ];
+    });
+  };
 
   const chooseLesson = (nextLesson: Lesson, nextActivity = nextLesson.sections[0].key) => {
     setLessonId(nextLesson.id);
@@ -285,13 +424,37 @@ function App() {
           </div>
         </header>
 
-        {lesson.id === 'news' ? <NewsActivity activity={activity} /> : <DraftLesson lesson={lesson} />}
+        {lesson.id === 'news' ? (
+          <>
+            <NewsActivity
+              activity={activity}
+              savedWords={savedWords}
+              onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
+            />
+            {activity !== 'vocabulary' && (
+              <WordCollector
+                section={currentSection?.title ?? 'News'}
+                onAddWord={addWord}
+              />
+            )}
+          </>
+        ) : (
+          <DraftLesson lesson={lesson} />
+        )}
       </main>
     </div>
   );
 }
 
-function NewsActivity({ activity }: { activity: ActivityKey }) {
+function NewsActivity({
+  activity,
+  savedWords,
+  onRemoveWord,
+}: {
+  activity: ActivityKey;
+  savedWords: SavedWord[];
+  onRemoveWord: (id: string) => void;
+}) {
   switch (activity) {
     case 'listening':
       return <ListeningPage />;
@@ -307,6 +470,8 @@ function NewsActivity({ activity }: { activity: ActivityKey }) {
       return <UsefulPhrasesPage />;
     case 'writing':
       return <WritingPage />;
+    case 'vocabulary':
+      return <VocabularyPage words={savedWords} onRemoveWord={onRemoveWord} />;
     default:
       return <OverviewPage />;
   }
@@ -358,10 +523,15 @@ function ListeningPage() {
         </ul>
       </InteractiveCard>
       <ChoiceGrid
-        title="After listening: choose Jack's view"
+        title="Exercise 2: choose Jack's view"
         questions={[
           {
             prompt: "Paparazzi taking photos of celebrities' glamorous lifestyles",
+            answer: 'OK',
+            options: ['OK', 'not OK'],
+          },
+          {
+            prompt: 'Paparazzi taking unflattering photos of celebrities',
             answer: 'OK',
             options: ['OK', 'not OK'],
           },
@@ -372,6 +542,21 @@ function ListeningPage() {
           },
           {
             prompt: "Paparazzi taking photos of celebrities' children",
+            answer: 'not OK',
+            options: ['OK', 'not OK'],
+          },
+          {
+            prompt: 'Paparazzi following celebrities everywhere',
+            answer: 'OK',
+            options: ['OK', 'not OK'],
+          },
+          {
+            prompt: 'Celebrities refusing to cooperate with the paparazzi',
+            answer: 'not OK',
+            options: ['OK', 'not OK'],
+          },
+          {
+            prompt: 'Celebrities complaining about the paparazzi',
             answer: 'not OK',
             options: ['OK', 'not OK'],
           },
@@ -394,14 +579,40 @@ function VerbPatternsPage() {
           'Tell and ask often need a person: tell someone to do something, ask someone to do something.',
         ]}
       />
-      <GapSelect title="Complete the celebrity-news sentences" questions={verbPatternQuestions} options={['enjoy', 'asked', 'explained', 'agrees', 'tell']} />
+      <article className="language-hint">
+        <h3>Подсказка ученику</h3>
+        <dl>
+          <div>
+            <dt>Инфинитив</dt>
+            <dd>Начальная форма глагола, обычно с <strong>to</strong>: <em>to take, to smile</em>. После некоторых глаголов нужен именно этот паттерн: <em>agree to help</em>.</dd>
+          </div>
+          <div>
+            <dt>Герундий</dt>
+            <dd>Форма глагола с окончанием <strong>-ing</strong>, которая называет действие: <em>taking, smiling</em>. Например: <em>enjoy taking photos</em>.</dd>
+          </div>
+          <div>
+            <dt>That-clause</dt>
+            <dd>Придаточная часть с <strong>that</strong>, после которого есть подлежащее и сказуемое: <em>She explained that she was busy</em>. В разговорной речи <em>that</em> иногда опускается.</dd>
+          </div>
+        </dl>
+      </article>
+      <GapSelect
+        title="Exercise 1: complete the celebrity-news sentences"
+        questions={verbPatternQuestions}
+        options={['enjoy', 'asked', 'explained', 'agrees', 'tell']}
+        randomizeOptions
+      />
+      <GapSelect
+        title="Exercise 2: complete the verb-pattern table"
+        questions={verbPatternTableQuestions}
+        options={['enjoy', 'agree', 'explain', 'ask', 'tell']}
+        randomizeOptions
+      />
+      <ImpossibleVerbExercise statements={impossibleVerbStatements} />
       <ChoiceGrid
-        title="Cross out the impossible verb"
-        questions={[
-          { prompt: 'I asked / told / said him to stop.', answer: 'said', options: ['asked', 'told', 'said'] },
-          { prompt: 'I just try / want / enjoy to lead a normal life.', answer: 'enjoy', options: ['try', 'want', 'enjoy'] },
-          { prompt: 'I told / warned / suggested him to stop.', answer: 'suggested', options: ['told', 'warned', 'suggested'] },
-        ]}
+        title="Extra practice: choose the correct verb form"
+        questions={extraVerbPatternQuestions}
+        randomizeOptions
       />
     </section>
   );
@@ -516,6 +727,87 @@ function WritingPage() {
   );
 }
 
+function VocabularyPage({ words, onRemoveWord }: { words: SavedWord[]; onRemoveWord: (id: string) => void }) {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="Notebook" title="My words" />
+      <InteractiveCard title={`Saved vocabulary · ${words.length}`}>
+        {words.length === 0 ? (
+          <p className="empty-state">Add unfamiliar words in the field at the bottom of any lesson page. They will appear here.</p>
+        ) : (
+          <div className="saved-words">
+            {words.map((word) => (
+              <div className="saved-word" key={word.id}>
+                <div>
+                  <strong>{word.term}</strong>
+                  <span>{word.note || 'No translation or note yet'}</span>
+                </div>
+                <small>{word.section}</small>
+                <button
+                  className="remove-word"
+                  type="button"
+                  onClick={() => onRemoveWord(word.id)}
+                  aria-label={`Remove ${word.term}`}
+                  title="Remove word"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </InteractiveCard>
+    </section>
+  );
+}
+
+function WordCollector({ section, onAddWord }: { section: string; onAddWord: (term: string, note: string, section: string) => void }) {
+  const [term, setTerm] = useState('');
+  const [note, setNote] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  const submitWord = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!term.trim()) return;
+    onAddWord(term, note, section);
+    setTerm('');
+    setNote('');
+    setSaved(true);
+  };
+
+  return (
+    <aside className="word-collector" aria-label="Add a word to My words">
+      <div>
+        <p className="kicker">My words</p>
+        <h3>Добавить новое слово</h3>
+      </div>
+      <form onSubmit={submitWord}>
+        <label>
+          <span>Слово или выражение</span>
+          <input
+            value={term}
+            onChange={(event) => {
+              setTerm(event.target.value);
+              setSaved(false);
+            }}
+            placeholder="e.g. unflattering"
+          />
+        </label>
+        <label>
+          <span>Перевод или заметка</span>
+          <input
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
+            placeholder="нелестный, невыгодный"
+          />
+        </label>
+        <button type="submit">Add word</button>
+      </form>
+      {saved && <p className="save-confirmation">Saved in My words.</p>}
+    </aside>
+  );
+}
+
 function DraftLesson({ lesson }: { lesson: Lesson }) {
   return (
     <section className="content-grid">
@@ -580,8 +872,35 @@ function InteractiveCard({ title, children }: { title: string; children: React.R
   );
 }
 
-function GapSelect({ title, questions, options }: { title: string; questions: { prompt: string; answer: string }[]; options: string[] }) {
+function shuffleOptions(options: string[]) {
+  const shuffled = [...options];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
+function GapSelect({
+  title,
+  questions,
+  options,
+  randomizeOptions = false,
+}: {
+  title: string;
+  questions: { prompt: string; answer: string }[];
+  options: string[];
+  randomizeOptions?: boolean;
+}) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [optionOrders] = useState<Record<string, string[]>>(() =>
+    Object.fromEntries(
+      questions.map((question) => [
+        question.prompt,
+        randomizeOptions ? shuffleOptions(options) : options,
+      ]),
+    ),
+  );
   const correct = questions.filter((question) => answers[question.prompt] === question.answer).length;
   const checked = Object.keys(answers).length > 0;
 
@@ -597,7 +916,7 @@ function GapSelect({ title, questions, options }: { title: string; questions: { 
               <span>{question.prompt}</span>
               <select value={value} onChange={(event) => setAnswers({ ...answers, [question.prompt]: event.target.value })}>
                 <option value="">Choose</option>
-                {options.map((option) => (
+                {(optionOrders[question.prompt] ?? options).map((option) => (
                   <option value={option} key={option}>
                     {option}
                   </option>
@@ -612,8 +931,24 @@ function GapSelect({ title, questions, options }: { title: string; questions: { 
   );
 }
 
-function ChoiceGrid({ title, questions }: { title: string; questions: { prompt: string; answer: string; options: string[] }[] }) {
+function ChoiceGrid({
+  title,
+  questions,
+  randomizeOptions = false,
+}: {
+  title: string;
+  questions: { prompt: string; answer: string; options: string[] }[];
+  randomizeOptions?: boolean;
+}) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [optionOrders] = useState<Record<string, string[]>>(() =>
+    Object.fromEntries(
+      questions.map((question) => [
+        question.prompt,
+        randomizeOptions ? shuffleOptions(question.options) : question.options,
+      ]),
+    ),
+  );
   const correct = questions.filter((question) => answers[question.prompt] === question.answer).length;
   const checked = Object.keys(answers).length > 0;
 
@@ -624,7 +959,7 @@ function ChoiceGrid({ title, questions }: { title: string; questions: { prompt: 
           <div className="choice-card" key={question.prompt}>
             <p>{question.prompt}</p>
             <div className="choice-options">
-              {question.options.map((option) => {
+              {(optionOrders[question.prompt] ?? question.options).map((option) => {
                 const chosen = answers[question.prompt] === option;
                 const answered = Boolean(answers[question.prompt]);
                 const isCorrect = option === question.answer;
@@ -644,6 +979,56 @@ function ChoiceGrid({ title, questions }: { title: string; questions: { prompt: 
         ))}
       </div>
       <p className="result">{checked ? `${correct}/${questions.length} correct` : 'Choose answers to start checking.'}</p>
+    </InteractiveCard>
+  );
+}
+
+function ImpossibleVerbExercise({ statements }: { statements: typeof impossibleVerbStatements }) {
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const groups = statements.flatMap((statement) =>
+    statement.parts.map((part, partIndex) => ({ ...part, key: `${statement.id}-${partIndex}` })),
+  );
+  const correct = groups.filter((group) => answers[group.key] === group.answer).length;
+
+  return (
+    <InteractiveCard title="Exercise 3: cross out the verb that is not possible">
+      <p className="exercise-instruction">In each group, two verbs are possible. Select the one that does not fit the sentence.</p>
+      <div className="impossible-list">
+        {statements.map((statement) => (
+          <div className="impossible-statement" key={statement.id}>
+            <span className="statement-letter">{statement.id}</span>
+            <p>
+              {statement.parts.map((part, partIndex) => {
+                const groupKey = `${statement.id}-${partIndex}`;
+                const selected = answers[groupKey];
+                return (
+                  <span key={groupKey}>
+                    {part.before}
+                    <span className="inline-choices">
+                      {part.options.map((option) => (
+                        <button
+                          className={`crossout-choice ${selected === option ? 'crossed' : ''} ${selected === option ? (option === part.answer ? 'correct' : 'wrong') : ''}`}
+                          type="button"
+                          key={option}
+                          onClick={() => setAnswers((current) => ({ ...current, [groupKey]: option }))}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </span>
+                    {part.after}
+                  </span>
+                );
+              })}
+            </p>
+          </div>
+        ))}
+      </div>
+      <p className="result">
+        {Object.keys(answers).length > 0
+          ? `${correct}/${groups.length} correct choices`
+          : 'Select the impossible verb in each group.'}
+      </p>
     </InteractiveCard>
   );
 }

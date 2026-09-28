@@ -47,6 +47,7 @@ body {
 
 button,
 select,
+input,
 textarea,
 audio {
   font: inherit;
@@ -326,6 +327,37 @@ li {
   background: linear-gradient(135deg, rgba(216, 232, 223, 0.86), rgba(255, 250, 244, 0.92));
 }
 
+.language-hint {
+  padding: 22px;
+  border: 1px solid rgba(79, 109, 135, 0.24);
+  border-left: 5px solid var(--blue-dark);
+  border-radius: 14px;
+  background: rgba(220, 232, 244, 0.72);
+}
+
+.language-hint dl {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 0;
+}
+
+.language-hint dl > div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.language-hint dt {
+  font-weight: 800;
+  color: var(--blue-dark);
+}
+
+.language-hint dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .question-list,
 .story-list,
 .choice-grid {
@@ -362,6 +394,7 @@ li {
 }
 
 select,
+input,
 textarea {
   width: 100%;
   color: var(--ink);
@@ -371,6 +404,11 @@ textarea {
 }
 
 select {
+  padding: 10px 12px;
+}
+
+input {
+  min-height: 44px;
   padding: 10px 12px;
 }
 
@@ -441,6 +479,77 @@ textarea {
   color: var(--red);
 }
 
+.exercise-instruction,
+.empty-state {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.impossible-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.impossible-statement {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.impossible-statement p {
+  line-height: 2.4;
+}
+
+.statement-letter {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--rose);
+  color: var(--rose-dark);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.inline-choices {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0 5px;
+  vertical-align: middle;
+}
+
+.crossout-choice {
+  min-height: 34px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.crossout-choice.crossed {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.crossout-choice.correct {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.crossout-choice.wrong {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
 .prompt-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -469,6 +578,86 @@ textarea {
   font-weight: 700;
 }
 
+.word-collector {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border: 1px solid rgba(155, 106, 94, 0.22);
+  border-radius: 14px;
+  background: rgba(246, 216, 200, 0.4);
+}
+
+.word-collector form {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.8fr) minmax(220px, 1.2fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin-top: 14px;
+}
+
+.word-collector label {
+  display: grid;
+  gap: 6px;
+}
+
+.word-collector label span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.word-collector button {
+  padding: 10px 16px;
+  border: 1px solid rgba(93, 117, 107, 0.28);
+  border-radius: 10px;
+  background: var(--sage);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.save-confirmation {
+  margin-top: 10px;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.saved-words {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.saved-word {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px 38px;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.44);
+}
+
+.saved-word strong,
+.saved-word span {
+  display: block;
+}
+
+.saved-word span,
+.saved-word small {
+  margin-top: 3px;
+  color: var(--muted);
+}
+
+.remove-word {
+  width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--red);
+  font-size: 1.3rem;
+}
+
 @media (max-width: 920px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -489,7 +678,8 @@ textarea {
   .content-grid,
   .audio-row,
   .choice-grid,
-  .prompt-cards {
+  .prompt-cards,
+  .word-collector form {
     grid-template-columns: 1fr;
   }
 }
@@ -507,8 +697,14 @@ textarea {
   }
 
   .question-row,
-  .story-row {
+  .story-row,
+  .language-hint dl > div,
+  .saved-word {
     grid-template-columns: 1fr;
+  }
+
+  .remove-word {
+    justify-self: start;
   }
 
   .section-link {
