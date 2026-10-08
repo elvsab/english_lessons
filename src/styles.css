@@ -829,13 +829,12 @@ textarea {
 
 .track-task {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  gap: 16px;
+  gap: 18px;
   align-items: start;
   border-left: 4px solid var(--blue-dark);
 }
 
-.track-task div {
+.track-copy {
   display: grid;
   gap: 7px;
 }
@@ -853,6 +852,23 @@ textarea {
   font-size: 0.82rem;
   font-weight: 800;
   white-space: nowrap;
+}
+
+.track-players {
+  display: grid;
+  gap: 10px;
+}
+
+.track-player {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.track-player audio {
+  width: 100%;
+  min-width: 0;
 }
 
 .number-board {
@@ -944,6 +960,7 @@ textarea {
   .question-row,
   .story-row,
   .track-task,
+  .track-player,
   .language-hint dl > div,
   .saved-word {
     grid-template-columns: 1fr;
