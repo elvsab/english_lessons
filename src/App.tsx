@@ -1082,7 +1082,7 @@ function GapSelect({
   title,
   questions,
   options,
-  randomizeOptions = false,
+  randomizeOptions = true,
 }: {
   title: string;
   questions: { prompt: string; answer: string }[];
@@ -1131,7 +1131,7 @@ function GapSelect({
 function ChoiceGrid({
   title,
   questions,
-  randomizeOptions = false,
+  randomizeOptions = true,
 }: {
   title: string;
   questions: { prompt: string; answer: string; options: string[] }[];
@@ -1185,6 +1185,9 @@ function ImpossibleVerbExercise({ statements }: { statements: typeof impossibleV
   const groups = statements.flatMap((statement) =>
     statement.parts.map((part, partIndex) => ({ ...part, key: `${statement.id}-${partIndex}` })),
   );
+  const [optionOrders] = useState<Record<string, string[]>>(() =>
+    Object.fromEntries(groups.map((group) => [group.key, shuffleOptions(group.options)])),
+  );
   const correct = groups.filter((group) => answers[group.key] === group.answer).length;
 
   return (
@@ -1202,7 +1205,7 @@ function ImpossibleVerbExercise({ statements }: { statements: typeof impossibleV
                   <span key={groupKey}>
                     {part.before}
                     <span className="inline-choices">
-                      {part.options.map((option) => (
+                      {(optionOrders[groupKey] ?? part.options).map((option) => (
                         <button
                           className={`crossout-choice ${selected === option ? 'crossed' : ''} ${selected === option ? (option === part.answer ? 'correct' : 'wrong') : ''}`}
                           type="button"
@@ -1232,6 +1235,9 @@ function ImpossibleVerbExercise({ statements }: { statements: typeof impossibleV
 
 function MatchStories() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [optionOrders] = useState<Record<number, string[]>>(() =>
+    Object.fromEntries(newsStories.map((story) => [story.id, shuffleOptions(headlineOptions)])),
+  );
   const correct = newsStories.filter((story) => answers[story.id] === story.answer).length;
 
   return (
@@ -1247,7 +1253,7 @@ function MatchStories() {
               <span>{story.text}</span>
               <select value={value} onChange={(event) => setAnswers({ ...answers, [story.id]: event.target.value })}>
                 <option value="">Choose headline</option>
-                {headlineOptions.map((option) => (
+                {(optionOrders[story.id] ?? headlineOptions).map((option) => (
                   <option value={option} key={option}>
                     {option}
                   </option>

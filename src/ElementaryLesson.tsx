@@ -11,6 +11,15 @@ type SavedWord = {
 type ChoiceQuestion = { prompt: string; answer: string; options: string[] };
 type GapQuestion = { prompt: string; answer: string };
 
+function shuffleOptions(options: string[]) {
+  const shuffled = [...options];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
 export function ElementaryActivity({
   activity,
   savedWords,
@@ -301,8 +310,11 @@ function TheoryBox({ title, points }: { title: string; points: string[] }) {
 
 function ChoiceGrid({ title, questions }: { title: string; questions: ChoiceQuestion[] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [optionOrders] = useState<Record<string, string[]>>(() =>
+    Object.fromEntries(questions.map((question) => [question.prompt, shuffleOptions(question.options)])),
+  );
   const correct = questions.filter((question) => answers[question.prompt] === question.answer).length;
-  return <InteractiveCard title={title}><div className="choice-grid">{questions.map((question) => <div className="choice-card" key={question.prompt}><p>{question.prompt}</p><div className="choice-options">{question.options.map((option) => {
+  return <InteractiveCard title={title}><div className="choice-grid">{questions.map((question) => <div className="choice-card" key={question.prompt}><p>{question.prompt}</p><div className="choice-options">{(optionOrders[question.prompt] ?? question.options).map((option) => {
     const chosen = answers[question.prompt] === option;
     return <button className={`choice-button ${chosen ? 'chosen' : ''} ${chosen ? (option === question.answer ? 'correct' : 'wrong') : ''}`} type="button" key={option} onClick={() => setAnswers((current) => ({ ...current, [question.prompt]: option }))}>{option}</button>;
   })}</div></div>)}</div><p className="result">{Object.keys(answers).length ? `${correct}/${questions.length} correct` : 'Choose answers to start checking.'}</p></InteractiveCard>;
@@ -310,10 +322,14 @@ function ChoiceGrid({ title, questions }: { title: string; questions: ChoiceQues
 
 function GapSelect({ title, questions, options }: { title: string; questions: GapQuestion[]; options: string[] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const uniqueOptions = [...new Set(options)];
+  const [optionOrders] = useState<Record<string, string[]>>(() =>
+    Object.fromEntries(questions.map((question) => [question.prompt, shuffleOptions(uniqueOptions)])),
+  );
   const correct = questions.filter((question) => answers[question.prompt] === question.answer).length;
   return <InteractiveCard title={title}><div className="question-list">{questions.map((question) => {
     const value = answers[question.prompt] ?? '';
-    return <label className={`question-row ${value ? (value === question.answer ? 'correct' : 'wrong') : ''}`} key={question.prompt}><span>{question.prompt}</span><select value={value} onChange={(event) => setAnswers((current) => ({ ...current, [question.prompt]: event.target.value }))}><option value="">Choose</option>{[...new Set(options)].map((option) => <option value={option} key={option}>{option}</option>)}</select></label>;
+    return <label className={`question-row ${value ? (value === question.answer ? 'correct' : 'wrong') : ''}`} key={question.prompt}><span>{question.prompt}</span><select value={value} onChange={(event) => setAnswers((current) => ({ ...current, [question.prompt]: event.target.value }))}><option value="">Choose</option>{(optionOrders[question.prompt] ?? uniqueOptions).map((option) => <option value={option} key={option}>{option}</option>)}</select></label>;
   })}</div><p className="result">{Object.keys(answers).length ? `${correct}/${questions.length} correct` : 'Choose answers to start checking.'}</p></InteractiveCard>;
 }
 
