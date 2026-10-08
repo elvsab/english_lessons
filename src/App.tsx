@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { ElementaryActivity } from './ElementaryLesson';
 import { JourneyActivity } from './JourneyLesson';
 
-type LessonId = 'news' | 'adrenalin' | 'journey' | 'culture';
+type LessonId = 'elementary' | 'news' | 'adrenalin' | 'journey' | 'culture';
 
 type ActivityKey =
   | 'overview'
@@ -20,6 +21,13 @@ type ActivityKey =
   | 'journey-anecdote'
   | 'directions'
   | 'dictionary-labels'
+  | 'elementary-greetings'
+  | 'elementary-foundations'
+  | 'elementary-world'
+  | 'elementary-questions'
+  | 'elementary-classroom'
+  | 'elementary-personal'
+  | 'elementary-hotel'
   | 'vocabulary';
 
 type SavedWord = {
@@ -39,6 +47,23 @@ type Lesson = {
 };
 
 const lessons: Lesson[] = [
+  {
+    id: 'elementary',
+    title: 'Elementary Start',
+    unit: 'English File · Unit 1',
+    tone: 'Introductions, countries, classroom English and practical phrases',
+    sections: [
+      { key: 'overview', title: 'Lesson map', eyebrow: 'Start' },
+      { key: 'elementary-greetings', title: "My name's Hannah", eyebrow: 'PDF 5' },
+      { key: 'elementary-foundations', title: 'Grammar foundations', eyebrow: 'PDF 6' },
+      { key: 'elementary-world', title: 'All over the world', eyebrow: 'PDF 7' },
+      { key: 'elementary-questions', title: 'Questions & numbers', eyebrow: 'PDF 8' },
+      { key: 'elementary-classroom', title: 'Classroom English', eyebrow: 'PDF 9' },
+      { key: 'elementary-personal', title: 'Personal information', eyebrow: 'PDF 10' },
+      { key: 'elementary-hotel', title: 'Arriving in London', eyebrow: 'PDF 11' },
+      { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
+    ],
+  },
   {
     id: 'news',
     title: 'News',
@@ -491,7 +516,7 @@ function App() {
           </div>
         </header>
 
-        {lesson.id === 'news' || lesson.id === 'journey' ? (
+        {lesson.id === 'news' || lesson.id === 'journey' || lesson.id === 'elementary' ? (
           <>
             {lesson.id === 'news' ? (
               <NewsActivity
@@ -499,10 +524,16 @@ function App() {
                 savedWords={savedWords.filter((word) => word.lessonId === 'news')}
                 onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
               />
-            ) : (
+            ) : lesson.id === 'journey' ? (
               <JourneyActivity
                 activity={activity}
                 savedWords={savedWords.filter((word) => word.lessonId === 'journey')}
+                onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
+              />
+            ) : (
+              <ElementaryActivity
+                activity={activity}
+                savedWords={savedWords.filter((word) => word.lessonId === 'elementary')}
                 onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
               />
             )}
