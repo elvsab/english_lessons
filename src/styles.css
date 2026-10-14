@@ -86,6 +86,77 @@ h3 {
   line-height: 1.2;
 }
 
+.lesson-visual {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.lesson-visual img {
+  display: block;
+  width: 100%;
+  max-height: 620px;
+  object-fit: cover;
+}
+
+.lesson-visual figcaption {
+  padding: 10px 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.matrix-scroll {
+  margin-top: 16px;
+  overflow-x: auto;
+}
+
+.listening-matrix {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
+
+.listening-matrix th,
+.listening-matrix td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.listening-matrix th:first-child {
+  text-align: left;
+  font-weight: 600;
+}
+
+.matrix-toggle {
+  width: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--green);
+  background: #fff;
+  font-weight: 800;
+}
+
+.matrix-toggle[aria-pressed="true"] {
+  background: var(--sage);
+  border-color: var(--sage-dark);
+}
+
+.matrix-toggle.correct {
+  background: var(--green-soft);
+  border-color: var(--green);
+}
+
+.matrix-toggle.wrong {
+  background: var(--red-soft);
+  border-color: var(--red);
+}
+
 p,
 li {
   font-size: 1rem;

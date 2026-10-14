@@ -28,6 +28,10 @@ type ActivityKey =
   | 'elementary-classroom'
   | 'elementary-personal'
   | 'elementary-hotel'
+  | 'elementary-hotel-episode'
+  | 'elementary-things'
+  | 'elementary-demonstratives'
+  | 'elementary-adjectives'
   | 'vocabulary';
 
 type SavedWord = {
@@ -50,8 +54,8 @@ const lessons: Lesson[] = [
   {
     id: 'elementary',
     title: 'Elementary Start',
-    unit: 'English File · Unit 1',
-    tone: 'Introductions, countries, classroom English and practical phrases',
+    unit: 'English File · Units 1-2',
+    tone: 'Introductions, everyday things, practical phrases and descriptions',
     sections: [
       { key: 'overview', title: 'Lesson map', eyebrow: 'Start' },
       { key: 'elementary-greetings', title: "My name's Hannah", eyebrow: 'PDF 5' },
@@ -61,6 +65,10 @@ const lessons: Lesson[] = [
       { key: 'elementary-classroom', title: 'Classroom English', eyebrow: 'PDF 9' },
       { key: 'elementary-personal', title: 'Personal information', eyebrow: 'PDF 10' },
       { key: 'elementary-hotel', title: 'Arriving in London', eyebrow: 'PDF 11' },
+      { key: 'elementary-hotel-episode', title: 'Jenny talks to Rob', eyebrow: 'PDF 12' },
+      { key: 'elementary-things', title: "A writer's room", eyebrow: 'PDF 13' },
+      { key: 'elementary-demonstratives', title: 'Things on a table', eyebrow: 'PDF 14' },
+      { key: 'elementary-adjectives', title: 'Stars and Stripes', eyebrow: 'PDF 15' },
       { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
     ],
   },
