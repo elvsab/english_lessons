@@ -131,8 +131,26 @@ function JourneyReading() {
         'Choose five and locate them precisely: in the north/south-west, on the coast, in the mountains, not far from, or between two places.',
       ]} />
 
+      <article className="panel beach-photo-activity">
+        <div className="beach-photo-heading">
+          <p className="kicker">Page 69 · Exercise 1</p>
+          <h3>Look at the beaches</h3>
+        </div>
+        <div className="beach-photo-grid">
+          {[
+            { label: 'a', src: './images/journey/beach-a.png', alt: 'A busy beach resort with sun loungers and umbrellas' },
+            { label: 'b', src: './images/journey/beach-b.png', alt: 'A tropical lagoon with white sand, cliffs and wooden boats' },
+            { label: 'c', src: './images/journey/beach-c.png', alt: 'A wide city beach curving around a bay' },
+          ].map((photo) => (
+            <figure className="beach-photo" key={photo.label}>
+              <img src={photo.src} alt={photo.alt} />
+              <figcaption>Photo {photo.label}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </article>
+      <OpenPrompts title="Page 69 · Exercise 1: before reading" prompts={['Have you ever been to a beach like one of these? What was it like?', 'Which one would you most like to visit, and why?']} />
       <ReadingText title="Page 69 · The Beach: a hidden lagoon" paragraphs={[beachText]} />
-      <OpenPrompts title="Page 69 · Exercise 1: before reading" prompts={['Have you ever been to a beach like one of these? What was it like?', 'Which type of beach would you most like to visit, and why?']} />
       <ChoiceGrid title="Exercise 1: which place does the extract describe?" questions={[{
         prompt: 'Choose the matching photo description.',
         answer: 'Photo b · a hidden tropical lagoon with white sand and jungle',
@@ -146,20 +164,7 @@ function JourneyReading() {
         { prompt: 'There are forests all around the island.', answer: 'False', options: ['True', 'False'] },
         { prompt: 'Large groups of tourists visit the beach.', answer: 'False', options: ['True', 'False'] },
       ]} />
-      <GapSelect title="Exercise 3: complete the descriptions of Bondi and Portinatx" options={[
-        'white sands', 'beach community', 'popular with tourists', 'southern', 'spectacular views', 'overlooking', 'sandy', 'hidden', 'surrounded by', 'sun loungers',
-      ]} questions={[
-        { prompt: 'Bondi: The ___ stretch for roughly a kilometre between two headlands.', answer: 'white sands' },
-        { prompt: "Bondi: It is the heart and soul of Sydney's ___.", answer: 'beach community' },
-        { prompt: 'Bondi: It is not only ___.', answer: 'popular with tourists' },
-        { prompt: 'Bondi: Local people walk at the ___ end of the beach.', answer: 'southern' },
-        { prompt: 'Bondi: The most ___ of the coast can be seen from the cliffs.', answer: 'spectacular views' },
-        { prompt: 'Bondi: The cliffs are ___ the bay.', answer: 'overlooking' },
-        { prompt: 'Portinatx: Ibiza has long ___ stretches packed with bars and watersports.', answer: 'sandy' },
-        { prompt: 'Portinatx: It also has delightful ___ coves.', answer: 'hidden' },
-        { prompt: 'Portinatx: The white-sand bay is ___ pine forests.', answer: 'surrounded by' },
-        { prompt: 'Portinatx: There are ___ for hire.', answer: 'sun loungers' },
-      ]} />
+      <BeachGapText />
       <OpenPrompts title="Exercise 4: talk about your city or country" prompts={[
         'Which places are still unspoilt? Which beaches are packed with bars and restaurants?',
         'Where are the views spectacular? Where do young people hang out?',
@@ -173,14 +178,24 @@ function JourneyListening() {
   return (
     <section className="stack">
       <PageTitle eyebrow="Listening · page 70" title="Four journeys, four landscapes" />
-      <InteractiveCard title="Exercise 1: look at the four travel scenes">
-        <div className="scene-grid">
-          {[
-            ['a', 'A horse rider crossing wide grasslands below snow-capped mountains'],
-            ['b', 'A dense skyline of modern high-rise buildings'],
-            ['c', 'Green forests and powerful waterfalls'],
-            ['d', 'Buddhist temples among ancient ruins'],
-          ].map(([label, description]) => <div className="scene-card" key={label}><strong>{label}</strong><p>{description}</p></div>)}
+      <InteractiveCard title="Exercise 1: look at photos a–d from Conrad's round-the-world trip">
+        <div className="travel-photo-collage">
+          <div className="travel-photo-top">
+            {[
+              { label: 'a', className: 'travel-photo-a', src: './images/journey/travel-a.jpg', alt: 'A rider on horseback in a mountain landscape' },
+              { label: 'b', className: 'travel-photo-b', src: './images/journey/travel-b.jpg', alt: 'A brightly lit city skyline beside the water at night' },
+              { label: 'c', className: 'travel-photo-c', src: './images/journey/travel-c.jpg', alt: 'A tall waterfall surrounded by green forest' },
+            ].map((photo) => (
+              <figure className={`travel-photo ${photo.className}`} key={photo.label}>
+                <img src={photo.src} alt={photo.alt} />
+                <span className="travel-photo-label" aria-hidden="true">{photo.label}</span>
+              </figure>
+            ))}
+          </div>
+          <figure className="travel-photo travel-photo-d">
+            <img src="./images/journey/travel-d.jpg" alt="Buddha statues and brick temples at ancient ruins" />
+            <span className="travel-photo-label" aria-hidden="true">d</span>
+          </figure>
         </div>
       </InteractiveCard>
       <OpenPrompts title="Before listening" prompts={['Where do you think each of the four photos was taken? Explain the clues you used.']} />
@@ -480,6 +495,60 @@ function GapSelect({ title, questions, options }: { title: string; questions: Ga
         return <label className={`question-row ${value ? (value === question.answer ? 'correct' : 'wrong') : ''}`} key={question.prompt}><span>{question.prompt}</span><select value={value} onChange={(event) => setAnswers((current) => ({ ...current, [question.prompt]: event.target.value }))}><option value="">Choose</option>{(optionOrders[question.prompt] ?? options).map((option) => <option value={option} key={option}>{option}</option>)}</select></label>;
       })}</div>
       <p className="result">{Object.keys(answers).length ? `${correct}/${questions.length} correct` : 'Choose answers to start checking.'}</p>
+    </InteractiveCard>
+  );
+}
+
+function BeachGapText() {
+  const options = ['beach community', 'hidden', 'overlooking', 'popular with tourists', 'sandy', 'southern', 'spectacular views', 'sun loungers', 'surrounded by', 'white sands'];
+  const gaps = [
+    { id: 1, answer: 'white sands' },
+    { id: 2, answer: 'beach community' },
+    { id: 3, answer: 'popular with tourists' },
+    { id: 4, answer: 'southern' },
+    { id: 5, answer: 'spectacular views' },
+    { id: 6, answer: 'overlooking' },
+    { id: 7, answer: 'sandy' },
+    { id: 8, answer: 'hidden' },
+    { id: 9, answer: 'surrounded by' },
+    { id: 10, answer: 'sun loungers' },
+  ];
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [optionOrders] = useState<Record<number, string[]>>(() =>
+    Object.fromEntries(gaps.map((gap) => [gap.id, shuffleOptions(options)])),
+  );
+  const correct = gaps.filter((gap) => answers[gap.id] === gap.answer).length;
+  const gapSelect = (id: number) => {
+    const gap = gaps.find((item) => item.id === id)!;
+    const value = answers[id] ?? '';
+    const status = value ? (value === gap.answer ? 'correct' : 'wrong') : '';
+    return (
+      <span className={`inline-gap ${status}`}>
+        <span aria-hidden="true">({id})</span>
+        <select aria-label={`Gap ${id}`} value={value} onChange={(event) => setAnswers((current) => ({ ...current, [id]: event.target.value }))}>
+          <option value="">Choose</option>
+          {optionOrders[id].map((option) => <option value={option} key={option}>{option}</option>)}
+        </select>
+      </span>
+    );
+  };
+
+  return (
+    <InteractiveCard title="Exercise 3: complete the descriptions of Bondi and Portinatx">
+      <div className="word-bank"><strong>Word bank</strong><p>{options.join(' · ')}</p></div>
+      <div className="beach-gap-texts">
+        <section className="gap-passage">
+          <h4>Bondi Beach, Australia</h4>
+          <p>The {gapSelect(1)} of Bondi beach stretch for roughly a kilometre between two headlands. It isn't the prettiest or largest beach in town, but it is the heart and soul of Sydney's {gapSelect(2)}.</p>
+          <p>Tourists flock to Bondi beach from all over the world – it's the place where beautiful young people go to hang out and be seen. At weekends in summer, you can hardly move for all the people.</p>
+          <p>But Bondi beach isn't only {gapSelect(3)} – local people enjoy a walk along the coastal path at the {gapSelect(4)} end of the beach. Any local will tell you that the most {gapSelect(5)} of the coast can be seen from the cliffs {gapSelect(6)} the bay.</p>
+        </section>
+        <section className="gap-passage">
+          <h4>Portinatx Beach, Ibiza</h4>
+          <p>The island of Ibiza has sixty beaches, ranging from long {gapSelect(7)} stretches packed with bars and watersports, to delightful {gapSelect(8)} coves at the foot of towering cliffs. Portinatx, in the north of the island, is one of Ibiza's most attractive beaches – a horseshoe bay with fine, white sand, {gapSelect(9)} pine forests. There are bars and restaurants, a sailing school and {gapSelect(10)} for hire.</p>
+        </section>
+      </div>
+      <p className="result">{Object.keys(answers).length ? `${correct}/${gaps.length} correct` : 'Choose answers to start checking.'}</p>
     </InteractiveCard>
   );
 }

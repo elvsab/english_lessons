@@ -108,6 +108,45 @@ h3 {
   font-size: 0.9rem;
 }
 
+.beach-photo-activity {
+  display: grid;
+  gap: 16px;
+}
+
+.beach-photo-heading {
+  display: grid;
+  gap: 5px;
+}
+
+.beach-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.beach-photo {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.beach-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.beach-photo figcaption {
+  padding: 9px 12px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
 .matrix-scroll {
   margin-top: 16px;
   overflow-x: auto;
@@ -447,6 +486,82 @@ li {
   border: 1px solid var(--line);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.42);
+}
+
+.word-bank {
+  display: grid;
+  gap: 5px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--yellow);
+}
+
+.word-bank strong {
+  color: var(--rose-dark);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.word-bank p {
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.beach-gap-texts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.gap-passage {
+  min-width: 0;
+  padding: 18px;
+  border-left: 4px solid var(--blue-dark);
+  background: rgba(255, 255, 255, 0.44);
+}
+
+.gap-passage h4 {
+  margin: 0 0 12px;
+  color: var(--blue-dark);
+  font-size: 1rem;
+}
+
+.gap-passage p {
+  color: var(--ink);
+  line-height: 2.25;
+}
+
+.gap-passage p + p {
+  margin-top: 10px;
+}
+
+.inline-gap {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 3px;
+  padding: 2px 4px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  vertical-align: middle;
+}
+
+.inline-gap > span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.inline-gap select {
+  width: 180px;
+  max-width: calc(100vw - 110px);
+  min-height: 36px;
+  padding: 6px 8px;
+  background: #fff;
 }
 
 .story-row {
@@ -832,35 +947,70 @@ textarea {
   margin-bottom: 0;
 }
 
-.scene-grid {
+.travel-photo-collage {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
+  margin-top: 16px;
 }
 
-.scene-card {
-  min-height: 124px;
-  padding: 18px;
+.travel-photo-top {
+  display: grid;
+  grid-template-columns: 0.61fr 1fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  aspect-ratio: 1.09 / 1;
+}
+
+.travel-photo {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f7faf8;
+  background: var(--blue);
 }
 
-.scene-card strong {
+.travel-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.travel-photo-a {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.travel-photo-b {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.travel-photo-c {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.travel-photo-d {
+  aspect-ratio: 1.86 / 1;
+}
+
+.travel-photo-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
   display: grid;
   width: 32px;
   height: 32px;
-  margin-bottom: 18px;
   place-items: center;
-  border-radius: 50%;
-  background: var(--sage);
-  color: var(--sage-dark);
+  border-radius: 5px;
+  background: var(--blue-dark);
+  color: #fff;
+  font-weight: 800;
   text-transform: uppercase;
-}
-
-.scene-card p {
-  margin: 0;
-  line-height: 1.5;
 }
 
 .open-prompts {
@@ -1007,7 +1157,8 @@ textarea {
   .content-grid,
   .audio-row,
   .choice-grid,
-  .scene-grid,
+  .beach-photo-grid,
+  .beach-gap-texts,
   .compact-prompts,
   .personal-form,
   .prompt-cards,
@@ -1061,5 +1212,23 @@ textarea {
   .section-link {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .travel-photo-top {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    aspect-ratio: auto;
+  }
+
+  .travel-photo-a,
+  .travel-photo-b,
+  .travel-photo-c {
+    grid-column: 1;
+    grid-row: auto;
+    aspect-ratio: auto;
+  }
+
+  .travel-photo img {
+    height: auto;
   }
 }
