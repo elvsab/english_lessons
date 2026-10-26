@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 type SavedWord = {
   id: string;
@@ -482,6 +482,115 @@ function ChoiceGrid({ title, questions }: { title: string; questions: ChoiceQues
   );
 }
 
+function ScreenShareSelect({
+  value,
+  options,
+  onChange,
+  ariaLabel,
+}: {
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+  ariaLabel: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const rootRef = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const listId = useId();
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    return () => document.removeEventListener('pointerdown', closeOnOutsideClick);
+  }, []);
+
+  useEffect(() => {
+    if (open) optionRefs.current[activeIndex]?.focus();
+  }, [activeIndex, open]);
+
+  const openMenu = (index?: number) => {
+    const selectedIndex = options.indexOf(value);
+    setActiveIndex(index ?? (selectedIndex >= 0 ? selectedIndex : 0));
+    setOpen(true);
+  };
+  const choose = (option: string) => {
+    onChange(option);
+    setOpen(false);
+    requestAnimationFrame(() => triggerRef.current?.focus());
+  };
+  const moveFocus = (offset: number) => {
+    setActiveIndex((current) => (current + offset + options.length) % options.length);
+  };
+
+  return (
+    <span className="screen-select" ref={rootRef}>
+      <button
+        aria-controls={listId}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-label={ariaLabel}
+        className="screen-select-trigger"
+        onClick={() => (open ? setOpen(false) : openMenu())}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            openMenu();
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            openMenu(value ? options.indexOf(value) : options.length - 1);
+          }
+        }}
+        ref={triggerRef}
+        role="combobox"
+        type="button"
+      >
+        <span className={value ? '' : 'screen-select-placeholder'}>{value || 'Choose'}</span>
+        <span className="screen-select-chevron" aria-hidden="true" />
+      </button>
+      {open && (
+        <span className="screen-select-menu" id={listId} role="listbox" aria-label={ariaLabel}>
+          {options.map((option, index) => (
+            <button
+              aria-selected={option === value}
+              className={`screen-select-option ${option === value ? 'selected' : ''}`}
+              key={option}
+              onClick={() => choose(option)}
+              onKeyDown={(event) => {
+                if (event.key === 'ArrowDown') {
+                  event.preventDefault();
+                  moveFocus(1);
+                } else if (event.key === 'ArrowUp') {
+                  event.preventDefault();
+                  moveFocus(-1);
+                } else if (event.key === 'Home') {
+                  event.preventDefault();
+                  setActiveIndex(0);
+                } else if (event.key === 'End') {
+                  event.preventDefault();
+                  setActiveIndex(options.length - 1);
+                } else if (event.key === 'Escape') {
+                  event.preventDefault();
+                  setOpen(false);
+                  triggerRef.current?.focus();
+                }
+              }}
+              ref={(element) => { optionRefs.current[index] = element; }}
+              role="option"
+              type="button"
+            >
+              {option}
+            </button>
+          ))}
+        </span>
+      )}
+    </span>
+  );
+}
+
 function GapSelect({ title, questions, options }: { title: string; questions: GapQuestion[]; options: string[] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [optionOrders] = useState<Record<string, string[]>>(() =>
@@ -492,7 +601,7 @@ function GapSelect({ title, questions, options }: { title: string; questions: Ga
     <InteractiveCard title={title}>
       <div className="question-list">{questions.map((question) => {
         const value = answers[question.prompt] ?? '';
-        return <label className={`question-row ${value ? (value === question.answer ? 'correct' : 'wrong') : ''}`} key={question.prompt}><span>{question.prompt}</span><select value={value} onChange={(event) => setAnswers((current) => ({ ...current, [question.prompt]: event.target.value }))}><option value="">Choose</option>{(optionOrders[question.prompt] ?? options).map((option) => <option value={option} key={option}>{option}</option>)}</select></label>;
+        return <div className={`question-row ${value ? (value === question.answer ? 'correct' : 'wrong') : ''}`} key={question.prompt}><span>{question.prompt}</span><ScreenShareSelect ariaLabel={`Answer for ${question.prompt}`} value={value} options={optionOrders[question.prompt] ?? options} onChange={(answer) => setAnswers((current) => ({ ...current, [question.prompt]: answer }))} /></div>;
       })}</div>
       <p className="result">{Object.keys(answers).length ? `${correct}/${questions.length} correct` : 'Choose answers to start checking.'}</p>
     </InteractiveCard>
@@ -525,10 +634,7 @@ function BeachGapText() {
     return (
       <span className={`inline-gap ${status}`}>
         <span aria-hidden="true">({id})</span>
-        <select aria-label={`Gap ${id}`} value={value} onChange={(event) => setAnswers((current) => ({ ...current, [id]: event.target.value }))}>
-          <option value="">Choose</option>
-          {optionOrders[id].map((option) => <option value={option} key={option}>{option}</option>)}
-        </select>
+        <ScreenShareSelect ariaLabel={`Gap ${id}`} value={value} options={optionOrders[id]} onChange={(answer) => setAnswers((current) => ({ ...current, [id]: answer }))} />
       </span>
     );
   };
