@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ElementaryActivity } from './ElementaryLesson';
 import { JourneyActivity } from './JourneyLesson';
+import { WordBuildingLesson } from './WordBuildingLesson';
 
-type LessonId = 'elementary' | 'news' | 'adrenalin' | 'journey' | 'culture';
+type LessonId = 'elementary' | 'news' | 'adrenalin' | 'journey' | 'word-building' | 'culture';
 
 type ActivityKey =
   | 'overview'
@@ -32,6 +33,7 @@ type ActivityKey =
   | 'elementary-things'
   | 'elementary-demonstratives'
   | 'elementary-adjectives'
+  | 'word-building'
   | 'vocabulary';
 
 type SavedWord = {
@@ -117,6 +119,15 @@ const lessons: Lesson[] = [
       { key: 'directions', title: 'Asking directions', eyebrow: 'Useful phrases' },
       { key: 'dictionary-labels', title: 'Dictionary labels', eyebrow: 'Vocabulary' },
       { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
+    ],
+  },
+  {
+    id: 'word-building',
+    title: 'Word Building',
+    unit: 'Reference & practice',
+    tone: 'Prefixes, suffixes and word families',
+    sections: [
+      { key: 'word-building', title: 'Prefixes & suffixes', eyebrow: 'Vocabulary' },
     ],
   },
   {
@@ -524,7 +535,9 @@ function App() {
           </div>
         </header>
 
-        {lesson.id === 'news' || lesson.id === 'journey' || lesson.id === 'elementary' ? (
+        {lesson.id === 'word-building' ? (
+          <WordBuildingLesson />
+        ) : lesson.id === 'news' || lesson.id === 'journey' || lesson.id === 'elementary' ? (
           <>
             {lesson.id === 'news' ? (
               <NewsActivity
