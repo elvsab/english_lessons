@@ -102,6 +102,14 @@ h3 {
   object-fit: cover;
 }
 
+.lesson-visual.full-image img {
+  width: auto;
+  max-width: 100%;
+  max-height: none;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
 .lesson-visual figcaption {
   padding: 10px 14px;
   color: var(--muted);

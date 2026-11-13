@@ -33,6 +33,9 @@ type ActivityKey =
   | 'elementary-things'
   | 'elementary-demonstratives'
   | 'elementary-adjectives'
+  | 'elementary-feelings'
+  | 'elementary-imperatives'
+  | 'elementary-review'
   | 'word-building'
   | 'vocabulary';
 
@@ -57,7 +60,7 @@ const lessons: Lesson[] = [
     id: 'elementary',
     title: 'Elementary Start',
     unit: 'English File · Units 1-2',
-    tone: 'Introductions, everyday things, practical phrases and descriptions',
+    tone: 'Introductions, everyday things, feelings, instructions and review',
     sections: [
       { key: 'overview', title: 'Lesson map', eyebrow: 'Start' },
       { key: 'elementary-greetings', title: "My name's Hannah", eyebrow: 'PDF 5' },
@@ -71,6 +74,9 @@ const lessons: Lesson[] = [
       { key: 'elementary-things', title: "A writer's room", eyebrow: 'PDF 13' },
       { key: 'elementary-demonstratives', title: 'Things on a table', eyebrow: 'PDF 14' },
       { key: 'elementary-adjectives', title: 'Stars and Stripes', eyebrow: 'PDF 15' },
+      { key: 'elementary-feelings', title: 'Feelings & a road trip', eyebrow: 'PDF 17' },
+      { key: 'elementary-imperatives', title: 'Imperatives & let\'s', eyebrow: 'PDF 18' },
+      { key: 'elementary-review', title: 'Revise and Check', eyebrow: 'PDF 19' },
       { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
     ],
   },

@@ -42,6 +42,9 @@ export function ElementaryActivity({
     case 'elementary-things': return <ThingsPage />;
     case 'elementary-demonstratives': return <DemonstrativesPage />;
     case 'elementary-adjectives': return <AdjectivesPage />;
+    case 'elementary-feelings': return <FeelingsPage />;
+    case 'elementary-imperatives': return <ImperativesPage />;
+    case 'elementary-review': return <ReviewPage />;
     case 'vocabulary': return <Vocabulary words={savedWords} onRemoveWord={onRemoveWord} />;
     default: return <Overview />;
   }
@@ -51,9 +54,9 @@ function Overview() {
   return (
     <section className="content-grid">
       <article className="panel intro-panel">
-        <p className="kicker">English File Elementary · PDF pages 5-15</p>
+        <p className="kicker">English File Elementary · PDF pages 5-19</p>
         <h2>Start speaking from the first lesson</h2>
-        <p>Introductions, verb be, countries, numbers, practical English, everyday things, demonstratives and adjectives.</p>
+        <p>Introductions, verb be, countries, practical English, everyday things, adjectives, feelings, instructions and review.</p>
       </article>
       <article className="panel lesson-plan">
         <h3>Lesson sequence</h3>
@@ -68,11 +71,14 @@ function Overview() {
           <li>Name everyday things and form regular plurals.</li>
           <li>Use this, that, these and those.</li>
           <li>Describe things with colours and adjectives.</li>
+          <li>Describe feelings and follow a family road-trip story.</li>
+          <li>Use positive and negative imperatives and make suggestions with let’s.</li>
+          <li>Review the grammar, vocabulary and pronunciation from Units 1-2.</li>
         </ol>
       </article>
       <article className="panel">
         <h3>Audio note</h3>
-        <p>All recordings used on PDF pages 5-15 are included beside their exercises. Combined activities have a separate player for every original track number.</p>
+        <p>All recordings used on PDF pages 5-19 are included beside their exercises. Combined activities have a separate player for every original track number.</p>
       </article>
     </section>
   );
@@ -483,6 +489,180 @@ function AdjectivesPage() {
   );
 }
 
+function FeelingsPage() {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="2C · PDF page 17 · Student's Book page 16" title="After 300 metres, turn right" />
+      <LessonVisual src="./images/elementary/feelings.png" alt="Eleven faces showing different feelings" caption="Match each feeling to a numbered picture" showFull />
+      <GapSelect title="Vocabulary 1a: match the feelings and pictures" options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']} questions={[
+        { prompt: 'hungry', answer: '6' }, { prompt: 'hot', answer: '4' }, { prompt: 'angry', answer: '5' },
+        { prompt: 'tired', answer: '7' }, { prompt: 'sad', answer: '10' }, { prompt: 'thirsty', answer: '3' },
+        { prompt: 'cold', answer: '8' }, { prompt: 'bored', answer: '11' }, { prompt: 'happy', answer: '2' },
+        { prompt: 'stressed', answer: '9' }, { prompt: 'worried', answer: '1' },
+      ]} />
+      <TheoryBox title="Feelings with be" points={[
+        'Use be + adjective: I am hungry. She is tired. They are worried.',
+        'Do not use have: say I am thirsty, not I have thirsty.',
+        'Add very, quite or not to change the meaning: very tired, quite hungry, not cold.',
+      ]} />
+      <article className="language-hint"><h3>Подсказка</h3><p>Слова о самочувствии и эмоциях здесь являются прилагательными, поэтому перед ними нужен глагол <strong>be</strong>: <strong>I’m hungry</strong>, <strong>she’s worried</strong>, <strong>we aren’t cold</strong>.</p></article>
+      <TrackTask tracks={['1.68']} title="Vocabulary 1b: listen, check and repeat">Check the eleven feelings, then repeat the complete phrases with I’m.</TrackTask>
+      <OpenPrompts title="Vocabulary 1c: how do you feel?" prompts={[
+        'Write two true positive sentences about how you feel now.',
+        'Write two true negative sentences about how you feel now.',
+        'Tell a partner using very, quite or not.',
+      ]} />
+      <LessonVisual src="./images/elementary/carter-family-story.png" alt="Five pictures of the Carter family travelling by car in Ireland" caption="The Carter family road trip: pictures A-E" showFull />
+      <TrackTask tracks={['1.69']} title="Listening 2a: the Carter family in Ireland">Listen and number pictures A-E from 1 to 5.</TrackTask>
+      <GapSelect title="Listening 2a: put the pictures in order" options={['1', '2', '3', '4', '5']} questions={[
+        { prompt: 'Picture A', answer: '2' }, { prompt: 'Picture B', answer: '4' }, { prompt: 'Picture C', answer: '1' },
+        { prompt: 'Picture D', answer: '5' }, { prompt: 'Picture E', answer: '3' },
+      ]} />
+      <OpenPrompts title="Before you read the dialogues" prompts={[
+        'What makes Mum worried in picture C?',
+        'Why are Tim and Suzy uncomfortable in picture A?',
+        'What do you think happens before the family reaches the hotel?',
+      ]} compact />
+    </section>
+  );
+}
+
+function ImperativesPage() {
+  const roadTripDialogues = [
+    '<strong>1</strong> Satnav: After 100 metres turn right. Turn right!<br/>Mum: Please slow down! This road is very dangerous.<br/>Dad: Don’t worry. You know I’m a good driver.<br/>Mum: Be careful!',
+    '<strong>2</strong> Suzy: Dad, this music is terrible. Can you turn it off?<br/>Dad: OK.<br/>Tim: Dad, I’m very hot. Turn the air conditioning on, please.<br/>Dad: Are you hot, Suzy?<br/>Suzy: No, I’m cold.<br/>Mum: Open your window, Tim.',
+    '<strong>3</strong> Suzy: I’m thirsty. Where’s the water?<br/>Mum: Here you are.<br/>Tim: I’m hungry. Can we stop soon?<br/>Mum: Let’s stop at that service station.<br/>Dad: OK.',
+    '<strong>4</strong> Tim: Give me my iPod.<br/>Suzy: This is my iPod!<br/>Dad: Be quiet!<br/>Tim: Are we there yet? I’m bored.<br/>Dad: It’s not far now. Only 80 kilometres.<br/>Tim: Can you turn the radio on please, Mum?<br/>Mum: OK.<br/>Dad: Oh no!',
+    '<strong>5</strong> Suzy: Where are we?<br/>Dad: We’re here. At the hotel.<br/>Tim: Great!<br/>Mum: Don’t park here. Look at that sign. No parking.<br/>Dad: Don’t worry. It’s OK. Come on. Let’s go.',
+  ];
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="2C · PDF page 18 · Student's Book page 17" title="Imperatives and let's" />
+      <InteractiveCard title="Listening and Reading 2b: the Carter family">
+        <p className="exercise-instruction">Read the five dialogues. Find the highlighted-style phrases that give instructions or make suggestions and guess their meaning.</p>
+        <div className="reading-sheet">{roadTripDialogues.map((dialogue) => <p key={dialogue} dangerouslySetInnerHTML={{ __html: dialogue }} />)}</div>
+      </InteractiveCard>
+      <MatchPairs title="Reading 2b: match the key phrases and meanings" pairs={[
+        ['slow down', 'drive more slowly'], ['don’t worry', 'stay calm'], ['be careful', 'pay attention to danger'],
+        ['turn it off', 'stop the device'], ['turn the air conditioning on', 'start the air conditioning'],
+        ['let’s stop', 'a suggestion to stop'], ['be quiet', 'stop making noise'], ['come on', 'encouragement to move'],
+      ]} />
+      <TrackTask tracks={['1.70']} title="Listening 2c: the end of the story">Listen to the end. What two problems does the family have?</TrackTask>
+      <LessonVisual src="./images/elementary/car-problem.png" alt="The Carter family car stopped on a dark road" caption="Predict the two problems before you listen" />
+      <OpenPrompts title="Listening 2c: your answers" prompts={[
+        'Problem 1', 'Problem 2', 'How do you think the family feels at the end?',
+      ]} compact />
+      <TheoryBox title="Imperatives and let's" points={[
+        'Positive imperative: use the base verb without a subject - Turn right. Be careful. Open the window.',
+        'Negative imperative: use don’t + base verb - Don’t turn right. Don’t park here.',
+        'Use please to make an instruction more polite - Open your window, please.',
+        'Use let’s + base verb for a suggestion that includes the speaker - Let’s stop. Let’s go.',
+      ]} />
+      <article className="language-hint"><h3>Подсказка</h3><p><strong>Imperative</strong> - команда, инструкция или просьба. Подлежащее <strong>you</strong> не пишется: <strong>Turn right</strong>. Для запрета добавьте <strong>don’t</strong>. <strong>Let’s</strong> означает «давай/давайте» и предлагает совместное действие.</p></article>
+      <GapSelect title="Grammar 3a: complete the chart" options={['Park', "Don't turn", "Let's", 'go']} questions={[
+        { prompt: 'Positive imperative: ___ here!', answer: 'Park' },
+        { prompt: 'Negative imperative: ___ right!', answer: "Don't turn" },
+        { prompt: 'Suggestion: ___ stop at that service station.', answer: "Let's" },
+        { prompt: "Come on. Let's ___ .", answer: 'go' },
+      ]} />
+      <ChoiceGrid title="Grammar 3b: choose the correct form" questions={[
+        world('1. The road is dangerous. ___ careful!', 'Be', ['Are', 'Be', 'You be']),
+        world('2. The baby is asleep. ___ quiet!', 'Be', ['Do', 'Be', 'Let’s']),
+        world('3. This is the wrong road. ___ left here.', "Don't turn", ['Not turn', "Don't turn", "Let's not turning"]),
+        world('4. We’re tired. ___ at the next hotel.', "Let's stop", ['Let’s stop', 'We stop', 'Let’s stopping']),
+        world('5. Please ___ the music off.', 'turn', ['turn', 'to turn', 'turning']),
+        world('6. ___ your mobile here.', "Don't use", ['No use', 'Not use', "Don't use"]),
+      ]} />
+      <LessonVisual src="./images/elementary/imperative-signs.png" alt="Nine road and public information signs" caption="Use a positive or negative imperative for each sign" />
+      <GapSelect title="Grammar 3d-e: what do the signs mean?" options={[
+        'Turn left', "Don't smoke here", "Don't eat or drink here", 'Turn off your mobile', "Don't take photos",
+        "Don't go in here", 'Cross the road now', 'Be careful', "Don't listen to music here",
+      ]} questions={[
+        { prompt: 'Sign 1', answer: 'Turn left' }, { prompt: 'Sign 2', answer: "Don't smoke here" },
+        { prompt: 'Sign 3', answer: "Don't eat or drink here" }, { prompt: 'Sign 4', answer: 'Turn off your mobile' },
+        { prompt: 'Sign 5', answer: "Don't take photos" }, { prompt: 'Sign 6', answer: "Don't go in here" },
+        { prompt: 'Sign 7', answer: 'Cross the road now' }, { prompt: 'Sign 8', answer: 'Be careful' },
+        { prompt: 'Sign 9', answer: "Don't listen to music here" },
+      ]} />
+      <TheoryBox title="Connected speech" points={[
+        'In natural speech, words are not always separated.',
+        'A final consonant often links to the next vowel: turn_off, open_it, stop_at.',
+        'Listen for the whole phrase, not one word at a time.',
+      ]} />
+      <TrackTask tracks={['1.72']} title="Pronunciation 4a-b: connected speech">Listen and write the six sentences. Then practise saying them with the same linking and rhythm.</TrackTask>
+      <OpenPrompts title="Pronunciation 4a: write the six sentences" prompts={['Sentence 1', 'Sentence 2', 'Sentence 3', 'Sentence 4', 'Sentence 5', 'Sentence 6']} compact />
+      <OpenPrompts title="Speaking 5: What's the matter?" prompts={[
+        'Student A: say how you feel. Student B: give an imperative or a let’s suggestion.',
+        'Change roles and use a different feeling.',
+        'Create a short dialogue with one positive imperative, one negative imperative and one let’s suggestion.',
+      ]} />
+      <TrackTask tracks={['1.73']} title="Song 6: Please Don't Go">Listen for imperatives and repeated phrases. Write three phrases you hear.</TrackTask>
+      <OpenPrompts title="Song: phrases" prompts={['Phrase 1', 'Phrase 2', 'Phrase 3']} compact />
+    </section>
+  );
+}
+
+function ReviewPage() {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="Units 1-2 · PDF page 19 · Student's Book page 18" title="Revise and Check" />
+      <ChoiceGrid title="Grammar: choose a, b or c" questions={[
+        world('1. Hello. ___ your name?', "What's", ['What', 'What are', "What's"]),
+        world('2. Maria is German. ___ a student.', "She's", ["She's", "He's", "It's"]),
+        world('3. A: Where ___ from? B: He’s from Turkey.', 'is he', ['he is', 'is', 'is he']),
+        world('4. They ___ English, they’re Scottish.', "aren't", ["isn't", "aren't", 'not are']),
+        world('5. A: Are you from Paris? B: Yes, ___.', 'I am', ['I am', "I'm", 'I are']),
+        world('6. She’s Brazilian. ___ name’s Daniela.', 'Her', ['His', 'Her', 'Your']),
+        world('7. We’re from the USA. ___ surname is Mackay.', 'Our', ['Your', 'Their', 'Our']),
+        world('8. A: What are they? B: They’re ___.', 'watches', ['watches', 'a watch', 'watchs']),
+        world('9. A: What is it? B: It’s ___.', 'an umbrella', ['a umbrella', 'an umbrella', 'umbrella']),
+        world('10. Look at those ___.', 'women', ['womans', 'women', 'womens']),
+        world('11. A: What are ___ in English? B: They’re keys.', 'these', ['that', 'this', 'these']),
+        world('12. These are very ___.', 'difficult exercises', ['difficult exercises', 'exercises difficult', 'difficults exercises']),
+        world('13. ___ careful! That dog’s dangerous.', 'Be', ['Are', 'Be you', 'Be']),
+        world('14. Please ___ in the library.', "don't eat", ['not eat', "don't eat", 'no eat']),
+        world('15. I’m hungry. ___ stop at the café.', "Let's", ["Let's", 'We', "Don't"]),
+      ]} />
+      <GapSelect title="Vocabulary a: complete with a preposition" options={['at', 'from', 'in', 'off', 'to']} questions={[
+        { prompt: '1. I’m ___ Japan.', answer: 'from' }, { prompt: '2. Nice ___ meet you.', answer: 'to' },
+        { prompt: '3. What’s bonjour ___ English?', answer: 'in' }, { prompt: '4. Look ___ the board.', answer: 'at' },
+        { prompt: '5. Please turn ___ your mobile phone.', answer: 'off' },
+      ]} />
+      <GapSelect title="Vocabulary b: complete the classroom phrases" options={['Answer', 'Stand', 'Open', 'Read', 'Work']} questions={[
+        { prompt: '1. ___ the text.', answer: 'Read' }, { prompt: '2. ___ in pairs.', answer: 'Work' },
+        { prompt: '3. ___ up.', answer: 'Stand' }, { prompt: '4. ___ the door.', answer: 'Open' },
+        { prompt: '5. ___ the questions.', answer: 'Answer' },
+      ]} />
+      <ChoiceGrid title="Vocabulary c: choose the word that is different" questions={[
+        world('1. Numbers', 'file', ['eight', 'two', 'seven', 'file']),
+        world('2. Countries', 'Chinese', ['Brazil', 'Chinese', 'Hungary', 'Switzerland']),
+        world('3. Nationalities', 'France', ['Polish', 'Italian', 'Japanese', 'France']),
+        world('4. Continents', 'Ireland', ['Africa', 'Asia', 'Ireland', 'Europe']),
+        world('5. Tens', 'sixteen', ['sixteen', 'forty', 'ninety', 'eighty']),
+        world('6. Days', 'Italy', ['Wednesday', 'Italy', 'Friday', 'Monday']),
+        world('7. Plural nouns', 'purse', ['glasses', 'purse', 'headphones', 'scissors']),
+        world('8. Parts of a room', 'school', ['door', 'window', 'wall', 'school']),
+        world('9. Reading things', 'wallet', ['wallet', 'newspaper', 'book', 'magazine']),
+        world('10. Negative feelings', 'happy', ['happy', 'tired', 'angry', 'stressed']),
+      ]} />
+      <GapSelect title="Vocabulary d: write the opposite adjective" options={['bad', 'cheap', 'clean', 'short', 'full']} questions={[
+        { prompt: '1. good', answer: 'bad' }, { prompt: '2. expensive', answer: 'cheap' },
+        { prompt: '3. dirty', answer: 'clean' }, { prompt: '4. tall', answer: 'short' }, { prompt: '5. empty', answer: 'full' },
+      ]} />
+      <ChoiceGrid title="Pronunciation a: choose the word or letter with a different sound" questions={[
+        world('1. tree sound', 'A', ['A', 'B', 'C', 'D']),
+        world('2. bike sound', 'day', ['Hi', 'day', 'my', 'nice']),
+        world('3. final /ɪz/', 'files', ['watches', 'boxes', 'files', 'glasses']),
+        world('4. /dʒ/ sound', 'good', ['Japan', 'German', 'good', 'page']),
+        world('5. cat sound', 'dangerous', ['dangerous', 'stamps', 'bad', 'laptop']),
+      ]} />
+      <ChoiceGrid title="Pronunciation b: underline the stressed syllable" questions={[
+        stress('address', 'second'), stress('Italy', 'first'), stress('expensive', 'second'), stress('newspaper', 'first'), stress('thirteen', 'second'),
+      ]} />
+    </section>
+  );
+}
+
 function PageTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return <div className="page-title"><p className="kicker">{eyebrow}</p><h2>{title}</h2></div>;
 }
@@ -509,8 +689,8 @@ function TrackTask({ tracks, title, children }: { tracks: string[]; title: strin
   );
 }
 
-function LessonVisual({ src, alt, caption }: { src: string; alt: string; caption: string }) {
-  return <figure className="lesson-visual"><img src={src} alt={alt} /><figcaption>{caption}</figcaption></figure>;
+function LessonVisual({ src, alt, caption, showFull = false }: { src: string; alt: string; caption: string; showFull?: boolean }) {
+  return <figure className={`lesson-visual ${showFull ? 'full-image' : ''}`}><img src={src} alt={alt} /><figcaption>{caption}</figcaption></figure>;
 }
 
 function ListeningMatrix({ title, rows }: { title: string; rows: MatrixRow[] }) {
