@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 
 type SavedWord = {
   id: string;
@@ -45,6 +45,11 @@ export function ElementaryActivity({
     case 'elementary-feelings': return <FeelingsPage />;
     case 'elementary-imperatives': return <ImperativesPage />;
     case 'elementary-review': return <ReviewPage />;
+    case 'elementary-review-reading': return <ReviewReadingPage />;
+    case 'elementary-britain-grammar': return <BritainGrammarPage />;
+    case 'elementary-britain-reading': return <BritainReadingPage />;
+    case 'elementary-work-play': return <WorkPlayPage />;
+    case 'elementary-uniforms': return <UniformsPage />;
     case 'vocabulary': return <Vocabulary words={savedWords} onRemoveWord={onRemoveWord} />;
     default: return <Overview />;
   }
@@ -54,7 +59,7 @@ function Overview() {
   return (
     <section className="content-grid">
       <article className="panel intro-panel">
-        <p className="kicker">English File Elementary · PDF pages 5-19</p>
+        <p className="kicker">English File Elementary · PDF pages 5-24</p>
         <h2>Start speaking from the first lesson</h2>
         <p>Introductions, verb be, countries, practical English, everyday things, adjectives, feelings, instructions and review.</p>
       </article>
@@ -74,11 +79,15 @@ function Overview() {
           <li>Describe feelings and follow a family road-trip story.</li>
           <li>Use positive and negative imperatives and make suggestions with let’s.</li>
           <li>Review the grammar, vocabulary and pronunciation from Units 1-2.</li>
+          <li>Compare British and American English.</li>
+          <li>Use present simple affirmative and negative forms.</li>
+          <li>Ask present simple questions and talk about jobs.</li>
+          <li>Read and discuss opinions about uniforms.</li>
         </ol>
       </article>
       <article className="panel">
         <h3>Audio note</h3>
-        <p>All recordings used on PDF pages 5-19 are included beside their exercises. Combined activities have a separate player for every original track number.</p>
+        <p>All recordings used on PDF pages 5-24 are included beside their exercises. Combined activities have a separate player for every original track number.</p>
       </article>
     </section>
   );
@@ -663,6 +672,299 @@ function ReviewPage() {
   );
 }
 
+function ReviewReadingPage() {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="Units 1-2 · PDF page 20 · Student's Book page 19" title="British and American English" />
+      <InteractiveCard title="Can you understand this text?">
+        <article className="reading-sheet">
+          <h3>British & American English - the same, but different</h3>
+          <p>British and American people speak the same language - English, but with some small differences.</p>
+          <h4>Vocabulary</h4>
+          <p>Some words are different in American English. For example, Americans say <strong>zip code</strong>, not <strong>postcode</strong>, <strong>vacation</strong>, not <strong>holiday</strong>, and <strong>cell phone</strong>, not <strong>mobile phone</strong>. Some words have different meanings. In British English a <strong>purse</strong> is a thing where women have their money and credit cards. In American English a <strong>purse</strong> is a woman's bag.</p>
+          <h4>Spelling</h4>
+          <p><strong>Colour</strong>, <strong>favour</strong>, and other words that end in <strong>-our</strong> in British English end with <strong>-or</strong> in American English, for example <strong>color</strong> and <strong>favor</strong>. <strong>Centre</strong> and <strong>theatre</strong> end with <strong>-ter</strong> in American English: <strong>center</strong>, <strong>theater</strong>.</p>
+          <h4>Grammar</h4>
+          <p>American grammar is very similar to British grammar, but there are some small differences, especially prepositions. Americans say <strong>See you Friday</strong>, but British people say <strong>See you on Friday</strong>.</p>
+          <h4>Pronunciation</h4>
+          <p>The most important difference is pronunciation. American and British accents are quite different, and speakers usually recognize the other accent quickly.</p>
+        </article>
+      </InteractiveCard>
+      <MatchPairs title="Reading b: match the highlighted language with its meaning" pairs={[
+        ['for example', 'one example of something'], ['meanings', 'the ideas words express'], ['end in', 'have these final letters'],
+        ['similar', 'almost the same'], ['accents', 'ways of pronouncing a language'], ['vice versa', 'the reverse is also true'],
+      ]} />
+      <ChoiceGrid title="Reading c: true or false?" questions={[
+        tf('1. American English and British English are very different.', false),
+        tf('2. Holiday and postcode are the same in British and American English.', false),
+        tf('3. Purse has different meanings in American and British English.', true),
+        tf('4. Kilometer is British spelling.', false),
+        tf('5. British and American grammar are not very different.', true),
+        tf("6. It's difficult to know from an accent if a person is English or American.", false),
+      ]} />
+      <LessonVisual src="./images/elementary/review-street-interviews.jpg" alt="Five people interviewed in the street" caption="Listening 1.74: speakers 1-5" showFull />
+      <TrackTask tracks={['1.74']} title="Can you understand these people?">Listen to five people in the street and choose the correct answer.</TrackTask>
+      <ChoiceGrid title="Listening 1.74: choose the answer" questions={[
+        world('1. Her name is ...', 'Cecile', ['Cecilia', 'Cecil', 'Cecile']),
+        world("2. Andy's from Newcastle in the ... of England.", 'North East', ['North East', 'North West', 'South East']),
+        world('3. David is ...', 'French', ['Italian', 'French', 'Spanish']),
+        world('4. Her name is ...', 'Arja', ['Arya', 'Aria', 'Arja']),
+        world('5. Karin is ...', 'Swiss', ['Swiss', 'Brazilian', 'Hungarian']),
+      ]} />
+      <OpenPrompts title="Can you say this in English?" prompts={[
+        'Count from 0 to 20.', 'Count from 20 to 100 in tens.', 'Say the days of the week.',
+        'Give three instructions: two positive and one negative.', 'Introduce yourself and another person.',
+        "Answer: What's your first name and surname? How do you spell it? Where are you from?",
+      ]} compact />
+    </section>
+  );
+}
+
+function BritainGrammarPage() {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="3A · PDF page 21 · Student's Book page 20" title="Things I love about Britain" />
+      <GapSelect title="Vocabulary 1a: complete the verb phrases" options={['go', 'read', 'work', 'have', 'listen']} questions={[
+        { prompt: '1. ___ a newspaper', answer: 'read' }, { prompt: '2. ___ to the radio', answer: 'listen' },
+        { prompt: '3. ___ children', answer: 'have' }, { prompt: '4. ___ to the cinema', answer: 'go' },
+        { prompt: '5. ___ in an office', answer: 'work' },
+      ]} />
+      <TrackTask tracks={['2.3']} title="Vocabulary 1c: verb phrases">Listen. Say the complete phrase after each cue.</TrackTask>
+      <LessonVisual src="./images/elementary/britain-stereotypes.jpg" alt="Four comments about British habits with a Union Jack umbrella" caption="Read the four opinions and decide if they are true" showFull />
+      <InteractiveCard title="Grammar 2a: four opinions about Britain">
+        <article className="reading-sheet">
+          <p><strong>British people drink tea at 5.00. Kati from Hungary:</strong> It's true that British people drink a lot of tea and coffee, but they don't drink tea at a special time. I work for a British company and my boss drinks tea all the time.</p>
+          <p><strong>It rains a lot. Nicolai from Russia:</strong> It rains a lot, but it doesn't rain every day. The weather changes quickly. I always take an umbrella when I go out.</p>
+          <p><strong>British people like animals. Norma from Mexico:</strong> My friends all have a dog or a cat. One family that I know has two dogs and five cats. British people love animals!</p>
+          <p><strong>The food in Britain isn't very good. Hasan from Turkey:</strong> The restaurants are quite expensive, but they are great. I share a flat with a Scottish boy, and he cooks every night. He watches cooking programmes and makes great curries.</p>
+        </article>
+      </InteractiveCard>
+      <TheoryBox title="Present simple: affirmative and negative" points={[
+        'Use the base verb with I, you, we and they: I work. They drink tea.',
+        'With he, she and it, add -s or -es: he works, she watches, it rains.',
+        "Use don't + base verb with I, you, we and they: They don't drink tea at 5.00.",
+        "Use doesn't + base verb with he, she and it: It doesn't rain every day. The main verb has no -s after doesn't.",
+      ]} />
+      <article className="language-hint"><h3>Подсказка</h3><p>В Present Simple окончание <strong>-s/-es</strong> появляется только после <strong>he, she, it</strong>. В отрицании его забирает вспомогательный глагол: <strong>he doesn't cook</strong>, а не <strong>he doesn't cooks</strong>.</p></article>
+      <GapSelect title="Grammar 2b: write the he / she / it form" options={['changes', 'has', 'cooks', 'goes', 'makes', 'watches']} questions={[
+        { prompt: 'change', answer: 'changes' }, { prompt: 'have', answer: 'has' }, { prompt: 'cook', answer: 'cooks' },
+        { prompt: 'go', answer: 'goes' }, { prompt: 'make', answer: 'makes' }, { prompt: 'watch', answer: 'watches' },
+      ]} />
+      <ChoiceGrid title="Grammar 2b: find the correct negative form" questions={[
+        world('It ___ every day.', "doesn't rain", ["doesn't rain", "don't rain", "doesn't rains"]),
+        world('They ___ tea at a special time.', "don't drink", ["don't drink", "doesn't drink", "don't drinks"]),
+      ]} />
+      <ChoiceGrid title="Grammar practice: choose the correct form" questions={[
+        world('1. My sister ___ in a bank.', 'works', ['work', 'works', "doesn't works"]),
+        world('2. We ___ TV in the morning.', "don't watch", ["doesn't watch", "don't watch", "don't watches"]),
+        world('3. Tom ___ two children.', 'has', ['have', 'haves', 'has']),
+        world('4. The supermarket ___ at 9.00.', 'opens', ['open', 'opens', 'opening']),
+        world('5. I ___ fast food.', "don't eat", ["doesn't eat", "don't eat", 'not eat']),
+        world('6. She ___ to music at work.', 'listens', ['listen', 'listens', 'listenes']),
+      ]} />
+      <TheoryBox title="Third person -s: pronunciation" points={[
+        '/s/ after an unvoiced sound: speaks, drinks, cooks.',
+        '/z/ after a vowel or voiced sound: rains, has, does, goes.',
+        '/ɪz/ after s, z, sh, ch, x or ge: watches, finishes, changes.',
+      ]} />
+      <TrackTask tracks={['2.5']} title="Pronunciation 3b: third person -s">Listen and repeat the three groups: /s/, /z/ and /ɪz/.</TrackTask>
+      <TrackTask tracks={['2.6']} title="Pronunciation 3c: change the sentence">Listen to each sentence and change the subject to she or he.</TrackTask>
+      <OpenPrompts title="Speaking 3d-e: true things" prompts={[
+        'Write three true positive sentences about yourself.', 'Write three true negative sentences about yourself.',
+        'Tell a partner. Then write two sentences about your partner using he or she.',
+      ]} />
+    </section>
+  );
+}
+
+function BritainReadingPage() {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="3A · PDF page 22 · Student's Book page 21" title="Starbucks, summer, and other things I love about Britain" />
+      <LessonVisual src="./images/elementary/britain-reading.jpg" alt="Six numbered photos and an article about life in Britain" caption="Photos 1-6: find the people, places and objects" showFull />
+      <GapSelect title="Reading 4a: match the items to photos 1-6" options={['1', '2', '3', '4', '5', '6']} questions={[
+        { prompt: 'a cash machine / ATM', answer: '3' }, { prompt: 'a cup of coffee', answer: '6' },
+        { prompt: 'a zebra crossing', answer: '2' }, { prompt: 'a driver', answer: '4' },
+        { prompt: 'a chemist', answer: '5' }, { prompt: 'a cyclist', answer: '1' },
+        { prompt: 'a waiter', answer: '6' }, { prompt: 'a pedestrian', answer: '2' },
+      ]} />
+      <TrackTask tracks={['2.7']} title="Reading and listening 4b">Read and listen to Mark Vanhoenacker's article, then answer the true-or-false questions.</TrackTask>
+      <InteractiveCard title="The article">
+        <article className="reading-sheet">
+          <p>Mark Vanhoenacker, an American journalist who lives in London, says the UK's not just OK - it's paradise. These are some of his reasons.</p>
+          <p><strong>Walking.</strong> Britain isn't a good place for cyclists. But for pedestrians it is wonderful. When you walk on a zebra crossing, all the drivers stop.</p>
+          <p><strong>Banks.</strong> British banks are great. You do everything online, and you don't pay when you take money out of an ATM. If you want to change banks, the banks do all the work, not you.</p>
+          <p><strong>Drivers.</strong> The British are very polite when they drive. They don't hoot, and they are patient with other drivers. They always say thank you when you let them pass.</p>
+          <p><strong>Boots the Chemist.</strong> Chemists in the UK are friendly shops and completely different from US pharmacies. Boots sells everything you want, not just medicine, and the shop assistants give you good advice.</p>
+          <p><strong>No ID Cards.</strong> Britain is one of the only places where people don't have ID cards. In the US you need ID when you buy a drink, go to a club, use a credit card, or take an intercity train.</p>
+          <p><strong>Summers.</strong> A good summer day in Britain is dry and warm, but not very hot.</p>
+          <p><strong>Starbucks.</strong> Starbucks isn't British, but Mark prefers the Starbucks in Britain. They are friendly places where people read the newspaper and drink good coffee. The waiters don't write your name on the cups.</p>
+        </article>
+      </InteractiveCard>
+      <ChoiceGrid title="Reading 4b: true or false?" questions={[
+        tf('1. Britain is a good country for cyclists and pedestrians.', false),
+        tf("2. It's expensive to use ATMs in Britain.", false),
+        tf('3. British drivers are nice to other drivers.', true),
+        tf('4. Boots the Chemist only has medicine.', false),
+        tf("5. In Britain people don't have ID cards.", true),
+        tf('6. Summers in Britain are very hot.', false),
+        tf("7. In Starbucks in Britain waiters don't use your first name.", true),
+      ]} />
+      <MatchPairs title="Reading 4c: verbs from the article" pairs={[
+        ['walk', 'move on foot'], ['pay', 'give money for something'], ['drive', 'control a car'], ['sell', 'give something for money'],
+        ['give', 'hand something to another person'], ['need', 'require something'], ['buy', 'get something by paying'],
+        ['use', 'do something with a tool or service'], ['prefer', 'like one thing more'], ['feel', 'experience an emotion'], ['call', 'say or announce a name'],
+      ]} />
+      <OpenPrompts title="Reading 4d: compare with your country or city" prompts={[
+        'Is your city good for cyclists and pedestrians? Why?', 'Are banks and ATMs similar or different?',
+        'How do drivers behave?', 'What are chemists like?', 'What are summers and coffee shops like?',
+      ]} />
+    </section>
+  );
+}
+
+function WorkPlayPage() {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="3B · PDF page 23 · Student's Book page 22" title="Work and play" />
+      <GapSelect title="Vocabulary 1a: order the letters to make jobs" options={['teacher', 'actor', 'waiter', 'taxi driver', 'receptionist']} questions={[
+        { prompt: 'ACTEHRE', answer: 'teacher' }, { prompt: 'ROCAT', answer: 'actor' }, { prompt: 'TRIEWA', answer: 'waiter' },
+        { prompt: 'AXTIRREDIV', answer: 'taxi driver' }, { prompt: 'PTIREONICEST', answer: 'receptionist' },
+      ]} />
+      <OpenPrompts title="Vocabulary 1c: jobs around you" prompts={[
+        'What do you do?', 'Write the jobs of five people you know.',
+      ]} compact />
+      <LessonVisual src="./images/elementary/his-job-her-job.jpg" alt="His job, her job game board with work questions" caption="Use the question board while you listen" showFull />
+      <TrackTask tracks={['2.10', '2.11']} title="Listening 2a-b: His job, her job">For each question, choose who it is about and then choose Wayne's answer.</TrackTask>
+      <JobShowExercise />
+      <OpenPrompts title="Listening 2c: guess the jobs" prompts={[
+        "What do you think Wayne's job is? Give two reasons.", "What do you think Tanya's job is? Give two reasons.",
+      ]} />
+      <TrackTask tracks={['2.12']} title="Listening 2d: the end of the programme">Listen and check Wayne's and Tanya's jobs.</TrackTask>
+      <ChoiceGrid title="Listening 2d: choose the jobs" questions={[
+        world("Wayne's job", 'footballer', ['footballer', 'police officer', 'taxi driver', 'pilot']),
+        world("Tanya's job", 'model', ['model', 'flight attendant', 'receptionist', 'journalist']),
+      ]} />
+      <TheoryBox title="Present simple questions" points={[
+        'Use Do + subject + base verb with I, you, we and they: Do you work in an office?',
+        'Use Does + subject + base verb with he, she and it: Does she work at the weekend?',
+        "Short answers: Yes, I do. No, I don't. Yes, she does. No, she doesn't.",
+        'The main verb stays in the base form after does: Does she work? not Does she works?',
+      ]} />
+      <article className="language-hint"><h3>Подсказка</h3><p><strong>Do</strong> и <strong>does</strong> - вспомогательные глаголы для вопросов. После <strong>does</strong> основной глагол теряет окончание <strong>-s</strong>: <strong>Does she work?</strong></p></article>
+      <TrackTask tracks={['2.13']} title="Grammar 3a: complete and check">Complete the four questions and short answers, then listen and check.</TrackTask>
+      <GapSelect title="Grammar 3a: complete the questions and answers" options={['Do', 'Does', 'do', "don't", 'does', "doesn't"]} questions={[
+        { prompt: '1a. ___ you work with other people?', answer: 'Do' }, { prompt: '1b. Yes, I ___.', answer: 'do' },
+        { prompt: '2a. ___ you work in an office?', answer: 'Do' }, { prompt: "2b. No, I ___ .", answer: "don't" },
+        { prompt: '3a. ___ she work with computers?', answer: 'Does' }, { prompt: "3b. No, she ___ .", answer: "doesn't" },
+        { prompt: '4a. ___ she work at the weekend?', answer: 'Does' }, { prompt: '4b. Yes, she ___.', answer: 'does' },
+      ]} />
+      <ChoiceGrid title="Grammar practice: make present simple questions" questions={[
+        world('1. ___ he like his job?', 'Does', ['Do', 'Does', 'Is']),
+        world('2. ___ they work at night?', 'Do', ['Are', 'Does', 'Do']),
+        world('3. Does Anna ___ foreign languages?', 'speak', ['speaks', 'speak', 'speaking']),
+        world('4. Do you ___ a uniform?', 'wear', ['wear', 'wears', 'wearing']),
+        world('5. ___ your brother drive?', 'Does', ['Do', 'Does', 'Is']),
+        world('6. Does the shop ___ at 9.00?', 'open', ['opens', 'open', 'opening']),
+      ]} />
+      <OpenPrompts title="Grammar 3c: play His job, her job" prompts={[
+        'Choose a job. Write four yes/no questions to help your partner guess it.',
+        'Answer your partner only with Yes, No or It depends.',
+      ]} />
+    </section>
+  );
+}
+
+function UniformsPage() {
+  return (
+    <section className="stack">
+      <PageTitle eyebrow="3B · PDF page 24 · Student's Book page 23" title="Pronunciation, routines and uniforms" />
+      <TheoryBox title="Pronunciation /ɜː/" points={[
+        'The stressed spellings ur, ir and er often have /ɜː/: nurse, thirty, her.',
+        'After w, or often has /ɜː/: work, word, world.',
+        'Some similarly spelled words use another sound, so listen before choosing.',
+      ]} />
+      <TrackTask tracks={['2.15']} title="Pronunciation 4a: /ɜː/">Listen and repeat: bird, nurse, thirty, her, work, journalist.</TrackTask>
+      <TrackTask tracks={['2.16']} title="Pronunciation 4b: odd sound out">Listen. Choose the word that does not have the /ɜː/ sound.</TrackTask>
+      <ChoiceGrid title="Pronunciation 4b: choose the different sound" questions={[
+        world('1. thirsty · dirty · thirteen · tired', 'tired', ['thirsty', 'dirty', 'thirteen', 'tired']),
+        world('2. earn · here · prefer · service', 'here', ['earn', 'here', 'prefer', 'service']),
+        world('3. Thursday · sure · turn · Turkey', 'sure', ['Thursday', 'sure', 'turn', 'Turkey']),
+        world('4. worry · word · worker · world', 'worry', ['worry', 'word', 'worker', 'world']),
+      ]} />
+      <OpenPrompts title="Pronunciation 4c: practise the sentences" prompts={[
+        'I prefer Turkish coffee.', 'Journalists work all over the world.', 'Shirley is thirty on Thursday.',
+      ]} compact />
+      <GapSelect title="Speaking 5a: complete the weekly routines" options={['do', 'eat', 'go', 'listen', 'read', 'use', 'walk', 'watch']} questions={[
+        { prompt: 'In the week: ___ to work / school', answer: 'walk' }, { prompt: '___ a computer at work / school', answer: 'use' },
+        { prompt: '___ in English', answer: 'read' }, { prompt: '___ in a café or restaurant', answer: 'eat' },
+        { prompt: '___ housework', answer: 'do' }, { prompt: 'At the weekend: ___ TV in the morning', answer: 'watch' },
+        { prompt: '___ to music', answer: 'listen' }, { prompt: '___ sport or exercise', answer: 'do' },
+        { prompt: '___ homework', answer: 'do' }, { prompt: '___ to the cinema', answer: 'go' },
+      ]} />
+      <OpenPrompts title="Speaking 5b-c: interview and report" prompts={[
+        'Ask your partner questions about each routine. Add one follow-up question.',
+        'Write three sentences about your partner using he or she.',
+      ]} />
+      <LessonVisual src="./images/elementary/uniforms-reading.jpg" alt="Jon, Marie and Sarah in three different uniforms with their opinions" caption="Uniforms - for or against? Match texts 1-3 to the people" showFull />
+      <GapSelect title="Reading 6a: match each text to a person" options={['Jon', 'Marie', 'Sarah']} questions={[
+        { prompt: 'Text 1', answer: 'Sarah' }, { prompt: 'Text 2', answer: 'Marie' }, { prompt: 'Text 3', answer: 'Jon' },
+      ]} />
+      <MatchPairs title="Reading 6b: highlighted clothes and phrases" pairs={[
+        ['tie', 'formal cloth worn around the neck'], ['skirt', 'clothing from the waist without separate legs'],
+        ['get dressed', 'put on clothes'], ['trousers', 'clothing with two legs'], ['nylon top', 'upper-body clothing made from nylon'],
+        ['jacket', 'short outer coat'], ['shirt and tie', 'a formal top and neckwear'], ['comfortable', 'pleasant and easy to wear'],
+      ]} />
+      <ChoiceGrid title="Reading 6c: who says it?" questions={[
+        world("1. Thinks uniforms are a good idea, but doesn't like their own uniform.", 'Marie', ['Jon', 'Marie', 'Sarah']),
+        world("2. Likes their uniform, but doesn't discuss uniforms in general.", 'Jon', ['Jon', 'Marie', 'Sarah']),
+        world('3. Thinks uniforms are a good idea and quite likes their uniform.', 'Sarah', ['Jon', 'Marie', 'Sarah']),
+      ]} />
+      <OpenPrompts title="Reading 6d: your opinion" prompts={[
+        'Do you wear a uniform at work or school?', 'Do you like it? Why or why not?', 'Do you think uniforms are a good idea?',
+      ]} />
+    </section>
+  );
+}
+
+function JobShowExercise() {
+  const rows = [
+    ['work outside', 'Tanya', 'It depends'], ['work in the street', 'Not asked', 'Not asked'],
+    ['work inside', 'Not asked', 'Not asked'], ['work in an office', 'Wayne', 'No'],
+    ['work in the evening', 'Wayne', 'It depends'], ['work at night', 'Not asked', 'Not asked'],
+    ['work at the weekend', 'Tanya', 'Yes'], ['work with computers', 'Tanya', 'No'],
+    ['work with other people', 'Wayne', 'Yes'], ['work long hours', 'Not asked', 'Not asked'],
+    ['have special qualifications', 'Wayne', 'No'], ['speak foreign languages', 'Wayne', 'No'],
+    ['travel', 'Tanya', 'Yes'], ['drive', 'Wayne', 'No'], ['make things', 'Wayne', 'No'],
+    ['wear a uniform or special clothes', 'Both', 'Yes'], ['earn a lot of money', 'Both', 'Yes'],
+  ] as const;
+  const [people, setPeople] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [personOptions] = useState(() => Object.fromEntries(rows.map(([prompt]) => [prompt, shuffleOptions(['Wayne', 'Tanya', 'Both', 'Not asked'])])));
+  const [answerOptions] = useState(() => Object.fromEntries(rows.map(([prompt]) => [prompt, shuffleOptions(['Yes', 'No', 'It depends', 'Not asked'])])));
+  const score = rows.reduce((total, [prompt, person, answer]) => total + Number(people[prompt] === person) + Number(answers[prompt] === answer), 0);
+  const answered = Object.keys(people).length + Object.keys(answers).length;
+  return (
+    <InteractiveCard title="Listening 2a-b: complete the game board">
+      <div className="job-show-grid">
+        <strong>Question</strong><strong>About</strong><strong>Answer</strong>
+        {rows.map(([prompt, person, answer]) => (
+          <div className="job-show-row" key={prompt}>
+            <span>{prompt}</span>
+            <div className={people[prompt] ? (people[prompt] === person ? 'correct' : 'wrong') : ''}>
+              <ScreenShareSelect ariaLabel={`Who: ${prompt}`} value={people[prompt] ?? ''} options={personOptions[prompt]} onChange={(value) => setPeople((current) => ({ ...current, [prompt]: value }))} />
+            </div>
+            <div className={answers[prompt] ? (answers[prompt] === answer ? 'correct' : 'wrong') : ''}>
+              <ScreenShareSelect ariaLabel={`Answer: ${prompt}`} value={answers[prompt] ?? ''} options={answerOptions[prompt]} onChange={(value) => setAnswers((current) => ({ ...current, [prompt]: value }))} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="result">{answered ? `${score}/${rows.length * 2} correct` : 'Listen and complete both columns.'}</p>
+    </InteractiveCard>
+  );
+}
+
 function PageTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return <div className="page-title"><p className="kicker">{eyebrow}</p><h2>{title}</h2></div>;
 }
@@ -741,6 +1043,115 @@ function ChoiceGrid({ title, questions }: { title: string; questions: ChoiceQues
   })}</div></div>)}</div><p className="result">{Object.keys(answers).length ? `${correct}/${questions.length} correct` : 'Choose answers to start checking.'}</p></InteractiveCard>;
 }
 
+function ScreenShareSelect({
+  value,
+  options,
+  onChange,
+  ariaLabel,
+}: {
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+  ariaLabel: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const rootRef = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const listId = useId();
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    return () => document.removeEventListener('pointerdown', closeOnOutsideClick);
+  }, []);
+
+  useEffect(() => {
+    if (open) optionRefs.current[activeIndex]?.focus();
+  }, [activeIndex, open]);
+
+  const openMenu = (index?: number) => {
+    const selectedIndex = options.indexOf(value);
+    setActiveIndex(index ?? (selectedIndex >= 0 ? selectedIndex : 0));
+    setOpen(true);
+  };
+  const choose = (option: string) => {
+    onChange(option);
+    setOpen(false);
+    requestAnimationFrame(() => triggerRef.current?.focus());
+  };
+  const moveFocus = (offset: number) => {
+    setActiveIndex((current) => (current + offset + options.length) % options.length);
+  };
+
+  return (
+    <span className="screen-select" ref={rootRef}>
+      <button
+        aria-controls={listId}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-label={ariaLabel}
+        className="screen-select-trigger"
+        onClick={() => (open ? setOpen(false) : openMenu())}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            openMenu();
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            openMenu(value ? options.indexOf(value) : options.length - 1);
+          }
+        }}
+        ref={triggerRef}
+        role="combobox"
+        type="button"
+      >
+        <span className={value ? '' : 'screen-select-placeholder'}>{value || 'Choose'}</span>
+        <span className="screen-select-chevron" aria-hidden="true" />
+      </button>
+      {open && (
+        <span className="screen-select-menu" id={listId} role="listbox" aria-label={ariaLabel}>
+          {options.map((option, index) => (
+            <button
+              aria-selected={option === value}
+              className={`screen-select-option ${option === value ? 'selected' : ''}`}
+              key={option}
+              onClick={() => choose(option)}
+              onKeyDown={(event) => {
+                if (event.key === 'ArrowDown') {
+                  event.preventDefault();
+                  moveFocus(1);
+                } else if (event.key === 'ArrowUp') {
+                  event.preventDefault();
+                  moveFocus(-1);
+                } else if (event.key === 'Home') {
+                  event.preventDefault();
+                  setActiveIndex(0);
+                } else if (event.key === 'End') {
+                  event.preventDefault();
+                  setActiveIndex(options.length - 1);
+                } else if (event.key === 'Escape') {
+                  event.preventDefault();
+                  setOpen(false);
+                  triggerRef.current?.focus();
+                }
+              }}
+              ref={(element) => { optionRefs.current[index] = element; }}
+              role="option"
+              type="button"
+            >
+              {option}
+            </button>
+          ))}
+        </span>
+      )}
+    </span>
+  );
+}
+
 function GapSelect({ title, questions, options }: { title: string; questions: GapQuestion[]; options: string[] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const uniqueOptions = [...new Set(options)];
@@ -750,7 +1161,7 @@ function GapSelect({ title, questions, options }: { title: string; questions: Ga
   const correct = questions.filter((question) => answers[question.prompt] === question.answer).length;
   return <InteractiveCard title={title}><div className="question-list">{questions.map((question) => {
     const value = answers[question.prompt] ?? '';
-    return <label className={`question-row ${value ? (value === question.answer ? 'correct' : 'wrong') : ''}`} key={question.prompt}><span>{question.prompt}</span><select value={value} onChange={(event) => setAnswers((current) => ({ ...current, [question.prompt]: event.target.value }))}><option value="">Choose</option>{(optionOrders[question.prompt] ?? uniqueOptions).map((option) => <option value={option} key={option}>{option}</option>)}</select></label>;
+    return <div className={`question-row ${value ? (value === question.answer ? 'correct' : 'wrong') : ''}`} key={question.prompt}><span>{question.prompt}</span><ScreenShareSelect ariaLabel={`Answer for ${question.prompt}`} value={value} options={optionOrders[question.prompt] ?? uniqueOptions} onChange={(answer) => setAnswers((current) => ({ ...current, [question.prompt]: answer }))} /></div>;
   })}</div><p className="result">{Object.keys(answers).length ? `${correct}/${questions.length} correct` : 'Choose answers to start checking.'}</p></InteractiveCard>;
 }
 

@@ -741,6 +741,46 @@ li {
   font-weight: 700;
 }
 
+.job-show-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 190px 190px;
+  gap: 8px 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.job-show-grid > strong {
+  padding: 0 10px 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.job-show-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.job-show-row > span {
+  font-weight: 650;
+}
+
+.job-show-row .correct .screen-select-trigger {
+  border-color: rgba(47, 122, 85, 0.55);
+  background: rgba(213, 238, 220, 0.72);
+}
+
+.job-show-row .wrong .screen-select-trigger {
+  border-color: rgba(174, 75, 75, 0.5);
+  background: rgba(246, 220, 218, 0.72);
+}
+
 .word-bank {
   display: grid;
   gap: 5px;
@@ -1465,6 +1505,36 @@ textarea {
   .language-hint dl > div,
   .saved-word {
     grid-template-columns: 1fr;
+  }
+
+  .job-show-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .job-show-grid > strong {
+    display: none;
+  }
+
+  .job-show-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .job-show-row > div::before {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 750;
+    text-transform: uppercase;
+  }
+
+  .job-show-row > div:nth-child(2)::before {
+    content: 'About';
+  }
+
+  .job-show-row > div:nth-child(3)::before {
+    content: 'Answer';
   }
 
   .word-input-item {

@@ -36,6 +36,11 @@ type ActivityKey =
   | 'elementary-feelings'
   | 'elementary-imperatives'
   | 'elementary-review'
+  | 'elementary-review-reading'
+  | 'elementary-britain-grammar'
+  | 'elementary-britain-reading'
+  | 'elementary-work-play'
+  | 'elementary-uniforms'
   | 'word-building'
   | 'vocabulary';
 
@@ -59,8 +64,8 @@ const lessons: Lesson[] = [
   {
     id: 'elementary',
     title: 'Elementary Start',
-    unit: 'English File · Units 1-2',
-    tone: 'Introductions, everyday things, feelings, instructions and review',
+    unit: 'English File · Units 1-3B',
+    tone: 'Introductions, everyday English, present simple, jobs and British life',
     sections: [
       { key: 'overview', title: 'Lesson map', eyebrow: 'Start' },
       { key: 'elementary-greetings', title: "My name's Hannah", eyebrow: 'PDF 5' },
@@ -77,6 +82,11 @@ const lessons: Lesson[] = [
       { key: 'elementary-feelings', title: 'Feelings & a road trip', eyebrow: 'PDF 17' },
       { key: 'elementary-imperatives', title: 'Imperatives & let\'s', eyebrow: 'PDF 18' },
       { key: 'elementary-review', title: 'Revise and Check', eyebrow: 'PDF 19' },
+      { key: 'elementary-review-reading', title: 'British & American English', eyebrow: 'PDF 20' },
+      { key: 'elementary-britain-grammar', title: 'Things I love about Britain', eyebrow: 'PDF 21' },
+      { key: 'elementary-britain-reading', title: 'Britain: reading', eyebrow: 'PDF 22' },
+      { key: 'elementary-work-play', title: 'Work and play', eyebrow: 'PDF 23' },
+      { key: 'elementary-uniforms', title: 'Uniforms', eyebrow: 'PDF 24' },
       { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
     ],
   },
