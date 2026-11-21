@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ElementaryActivity } from './ElementaryLesson';
 import { JourneyActivity } from './JourneyLesson';
+import { OpinionsActivity } from './OpinionsLesson';
 import { WordBuildingLesson } from './WordBuildingLesson';
 
-type LessonId = 'elementary' | 'news' | 'adrenalin' | 'journey' | 'word-building' | 'culture';
+type LessonId = 'elementary' | 'news' | 'adrenalin' | 'journey' | 'opinions' | 'word-building' | 'culture';
 
 type ActivityKey =
   | 'overview'
@@ -22,6 +23,14 @@ type ActivityKey =
   | 'journey-anecdote'
   | 'directions'
   | 'dictionary-labels'
+  | 'opinions-survey'
+  | 'opinions-reporting'
+  | 'opinions-media'
+  | 'opinions-questions'
+  | 'opinions-adjectives'
+  | 'opinions-pride'
+  | 'opinions-phrases'
+  | 'opinions-collocations'
   | 'elementary-greetings'
   | 'elementary-foundations'
   | 'elementary-world'
@@ -134,6 +143,24 @@ const lessons: Lesson[] = [
       { key: 'journey-anecdote', title: 'Journey anecdote', eyebrow: 'Speaking' },
       { key: 'directions', title: 'Asking directions', eyebrow: 'Useful phrases' },
       { key: 'dictionary-labels', title: 'Dictionary labels', eyebrow: 'Vocabulary' },
+      { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
+    ],
+  },
+  {
+    id: 'opinions',
+    title: 'Opinions',
+    unit: 'Unit 9',
+    tone: 'Relationships, culture, reported speech and giving opinions',
+    sections: [
+      { key: 'overview', title: 'Lesson map', eyebrow: 'Start' },
+      { key: 'opinions-survey', title: 'Men and women', eyebrow: 'Pages 76-77' },
+      { key: 'opinions-reporting', title: 'Reported statements', eyebrow: 'Grammar' },
+      { key: 'opinions-media', title: 'Books, films & music', eyebrow: 'Listening' },
+      { key: 'opinions-questions', title: 'Reported questions', eyebrow: 'Grammar' },
+      { key: 'opinions-adjectives', title: '-ed / -ing adjectives', eyebrow: 'Vocabulary' },
+      { key: 'opinions-pride', title: 'Pride and Prejudice', eyebrow: 'Reading' },
+      { key: 'opinions-phrases', title: 'Giving your opinion', eyebrow: 'Useful phrases' },
+      { key: 'opinions-collocations', title: 'Opinion collocations', eyebrow: 'Vocabulary' },
       { key: 'vocabulary', title: 'My words', eyebrow: 'Notebook' },
     ],
   },
@@ -553,7 +580,7 @@ function App() {
 
         {lesson.id === 'word-building' ? (
           <WordBuildingLesson />
-        ) : lesson.id === 'news' || lesson.id === 'journey' || lesson.id === 'elementary' ? (
+        ) : lesson.id === 'news' || lesson.id === 'journey' || lesson.id === 'opinions' || lesson.id === 'elementary' ? (
           <>
             {lesson.id === 'news' ? (
               <NewsActivity
@@ -565,6 +592,12 @@ function App() {
               <JourneyActivity
                 activity={activity}
                 savedWords={savedWords.filter((word) => word.lessonId === 'journey')}
+                onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
+              />
+            ) : lesson.id === 'opinions' ? (
+              <OpinionsActivity
+                activity={activity}
+                savedWords={savedWords.filter((word) => word.lessonId === 'opinions')}
                 onRemoveWord={(id) => setSavedWords((current) => current.filter((item) => item.id !== id))}
               />
             ) : (
